@@ -1,0 +1,2765 @@
+<section data-mw-section-id="0" id="mwAQ"><p id="mwAg"><b id="mwAw">Метод обратного распространения ошибки</b> — метод вычисления градиента, который используется при обновлении весов <a rel="mw:WikiLink" href="./Многослойный_перцептрон_Румельхарта" title="Многослойный перцептрон Румельхарта" id="mwBA">многослойного перцептрона</a>. Впервые метод был описан в <a rel="mw:WikiLink" href="./1974_год_в_науке" title="1974 год в науке" id="mwBQ">1974 году</a> <a rel="mw:WikiLink" href="./Галушкин,_Александр_Иванович_(учёный)" title="Галушкин, Александр Иванович (учёный)" id="mwBg">Александром Галушкиным</a><sup about="#mwt2" class="mw-ref reference" id="cite_ref-1" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-1"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-1" id="mwBw"><span class="mw-reflink-text" id="mwCA"><span class="cite-bracket" id="mwCQ">[</span>1<span class="cite-bracket" id="mwCg">]</span></span></a></sup><sup about="#mwt4" class="mw-ref reference" id="cite_ref-2" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-2"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-2" id="mwCw"><span class="mw-reflink-text" id="mwDA"><span class="cite-bracket" id="mwDQ">[</span>2<span class="cite-bracket" id="mwDg">]</span></span></a></sup>, а также независимо и одновременно <span data-interwiki-lang="en" data-interwiki-article="Paul Werbos" about="#mwt1" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"iw","href":"./Шаблон:Iw"},"params":{"1":{"wt":"Вербос, Пол"},"2":{"wt":"Полом Вербосом"},"3":{"wt":"en"},"4":{"wt":"Paul Werbos"}},"i":0}}]}' id="mwDw"><a rel="mw:WikiLink" href="./Вербос,_Пол?action=edit&amp;redlink=1" title="Вербос, Пол" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Вербос, Пол"]}}'>Полом Вербосом</a></span><sup class="noprint" style="font-style:normal; font-weight:normal;" about="#mwt1" id="mwEA"><a rel="mw:WikiLink/Interwiki" href="https://en.wikipedia.org/wiki/Paul%20Werbos" title="en:Paul Werbos" class="extiw"><span title="Paul Werbos — версия статьи «Вербос, Пол» на английском языке">[англ.]</span></a></sup><sup about="#mwt5" class="mw-ref reference" id="cite_ref-3" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-3"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-3" id="mwEQ"><span class="mw-reflink-text" id="mwEg"><span class="cite-bracket" id="mwEw">[</span>3<span class="cite-bracket" id="mwFA">]</span></span></a></sup>. Далее существенно развит в <a rel="mw:WikiLink" href="./1986_год_в_науке" title="1986 год в науке" id="mwFQ">1986 году</a> <a rel="mw:WikiLink" href="./Румельхарт,_Дэвид" title="Румельхарт, Дэвид" id="mwFg">Дэвидом Румельхартом</a>, <a rel="mw:WikiLink" href="./Хинтон,_Джеффри" title="Хинтон, Джеффри" id="mwFw">Джеффри Хинтоном</a> и <a rel="mw:WikiLink" href="./Уильямс,_Рональд?action=edit&amp;redlink=1" title="Уильямс, Рональд" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Уильямс, Рональд"]}}' id="mwGA">Рональдом Уильямсом</a><sup about="#mwt6" class="mw-ref reference" id="cite_ref-Rumelhart_4-0" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{"name":"Rumelhart"},"body":{"id":"mw-reference-text-cite_note-Rumelhart-4"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-Rumelhart-4" id="mwGQ"><span class="mw-reflink-text" id="mwGg"><span class="cite-bracket" id="mwGw">[</span>4<span class="cite-bracket" id="mwHA">]</span></span></a></sup> и независимо и одновременно <a rel="mw:WikiLink" href="./Барцев,_Сергей_Игоревич?action=edit&amp;redlink=1" title="Барцев, Сергей Игоревич" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Барцев, Сергей Игоревич"]}}' id="mwHQ">Барцевым</a> и <a rel="mw:WikiLink" href="./Охонин,_Виктор_Александрович?action=edit&amp;redlink=1" title="Охонин, Виктор Александрович" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Охонин, Виктор Александрович"]}}' id="mwHg">Охониным</a> (красноярская группа)<sup about="#mwt7" class="mw-ref reference" id="cite_ref-5" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-5"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-5" id="mwHw"><span class="mw-reflink-text" id="mwIA"><span class="cite-bracket" id="mwIQ">[</span>5<span class="cite-bracket" id="mwIg">]</span></span></a></sup>. Это <a rel="mw:WikiLink" href="./Итеративный_градиентный_алгоритм?action=edit&amp;redlink=1" title="Итеративный градиентный алгоритм" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Итеративный градиентный алгоритм"]}}' id="mwIw">итеративный градиентный алгоритм</a>, который используется с целью минимизации ошибки работы многослойного перцептрона и получения желаемого выхода.</p>
+
+<p id="mwJA">Основная идея этого метода состоит в распространении сигналов ошибки от выходов сети к её входам, в направлении обратном прямому распространению сигналов в обычном режиме работы. Барцев и Охонин предложили обобщающий метод («принцип двойственности»), применимый к более широкому классу систем, включая <a rel="mw:WikiLink" href="./Система_с_запаздыванием?action=edit&amp;redlink=1" title="Система с запаздыванием" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Система с запаздыванием"]}}' id="mwJQ">системы с запаздыванием</a>, <a rel="mw:WikiLink" href="./Распределённая_система" title="Распределённая система" id="mwJg">распределённые системы</a> и им подобные<sup about="#mwt8" class="mw-ref reference" id="cite_ref-6" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-6"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-6" id="mwJw"><span class="mw-reflink-text" id="mwKA"><span class="cite-bracket" id="mwKQ">[</span>6<span class="cite-bracket" id="mwKg">]</span></span></a></sup>.</p>
+
+<p id="mwKw">Для возможности применения метода обратного распространения ошибки <a rel="mw:WikiLink" href="./Передаточная_функция" title="Передаточная функция" id="mwLA">передаточная функция</a> <a rel="mw:WikiLink" href="./Искусственный_нейрон" title="Искусственный нейрон" id="mwLQ">нейронов</a> должна быть <a rel="mw:WikiLink" href="./Дифференцируемость" title="Дифференцируемость" class="mw-redirect" id="mwLg">дифференцируема</a>. Метод является изменением классического <a rel="mw:WikiLink" href="./Градиентный_спуск" title="Градиентный спуск" id="mwLw">метода градиентного спуска</a>.</p>
+
+<meta property="mw:PageProp/toc" data-mw='{"autoGenerated":true}' id="mwMA"/></section><section data-mw-section-id="1" id="mwMQ"><h2 id="Сигмоидальные_функции_активации"><span id=".D0.A1.D0.B8.D0.B3.D0.BC.D0.BE.D0.B8.D0.B4.D0.B0.D0.BB.D1.8C.D0.BD.D1.8B.D0.B5_.D1.84.D1.83.D0.BD.D0.BA.D1.86.D0.B8.D0.B8_.D0.B0.D0.BA.D1.82.D0.B8.D0.B2.D0.B0.D1.86.D0.B8.D0.B8" typeof="mw:FallbackId"></span>Сигмоидальные функции активации</h2>
+<p id="mwMg">Наиболее часто в качестве <a rel="mw:WikiLink" href="./Функция_активации" title="Функция активации" id="mwMw">функций активации</a> используются следующие виды <a rel="mw:WikiLink" href="./Сигмоид" title="Сигмоид" class="mw-redirect" id="mwNA">сигмоид</a>:</p>
+
+<p id="mwNQ">Функция Ферми (экспоненциальная сигмоида):</p>
+<dl id="mwNg"><dd id="mwNw"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt9" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"f(s)= \\frac{1}{1+e^{-2 \\alpha s}}"}}' id="mwOA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle f(s)={\frac {1}{1+e^{-2\alpha s}}}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>f</mi>
+        <mo stretchy="false">(</mo>
+        <mi>s</mi>
+        <mo stretchy="false">)</mo>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mn>1</mn>
+            <mrow>
+              <mn>1</mn>
+              <mo>+</mo>
+              <msup>
+                <mi>e</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo>−<!-- − --></mo>
+                  <mn>2</mn>
+                  <mi>α<!-- α --></mi>
+                  <mi>s</mi>
+                </mrow>
+              </msup>
+            </mrow>
+          </mfrac>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle f(s)={\frac {1}{1+e^{-2\alpha s}}}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/965625da3253fef31a429e7e6155021c1eb76743" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -2.338ex; width:17.355ex; height:5.676ex;" alt="{\displaystyle f(s)={\frac {1}{1+e^{-2\alpha s}}}}"/></span></dd></dl>
+
+<p id="mwOQ">Рациональная сигмоида (при <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt10" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\alpha=0"}}' id="mwOg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \alpha =0}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>α<!-- α --></mi>
+        <mo>=</mo>
+        <mn>0</mn>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \alpha =0}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/30cc00f65bbc630448311dd2dc82e7ce5e90985a" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:5.749ex; height:2.176ex;" alt="{\displaystyle \alpha =0}"/></span> вырождается в так называемую пороговую функцию активации):</p>
+<dl id="mwOw"><dd id="mwPA"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt11" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"f(s)= \\frac{s}{|s|+ \\alpha}"}}' id="mwPQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle f(s)={\frac {s}{|s|+\alpha }}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>f</mi>
+        <mo stretchy="false">(</mo>
+        <mi>s</mi>
+        <mo stretchy="false">)</mo>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mi>s</mi>
+            <mrow>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mo stretchy="false">|</mo>
+              </mrow>
+              <mi>s</mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mo stretchy="false">|</mo>
+              </mrow>
+              <mo>+</mo>
+              <mi>α<!-- α --></mi>
+            </mrow>
+          </mfrac>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle f(s)={\frac {s}{|s|+\alpha }}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/850f4c4f9858cb587098b6fcb7201f0e0f251943" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -2.671ex; width:14.825ex; height:5.509ex;" alt="{\displaystyle f(s)={\frac {s}{|s|+\alpha }}}"/></span></dd></dl>
+
+<p id="mwPg"><a rel="mw:WikiLink" href="./Гиперболический_тангенс" title="Гиперболический тангенс" class="mw-redirect" id="mwPw">Гиперболический тангенс</a>:</p>
+<dl id="mwQA"><dd id="mwQQ"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt12" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"f(s)= \\mathrm{th}\\, \\frac{s}{\\alpha} = \\frac{ e^{ \\frac{s}{\\alpha} } - e^{ - \\frac{s}{\\alpha}} } \n{e^{ \\frac{s}{\\alpha} } + e^{ - \\frac{s}{\\alpha}}}"}}' id="mwQg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle f(s)=\mathrm {th} \,{\frac {s}{\alpha }}={\frac {e^{\frac {s}{\alpha }}-e^{-{\frac {s}{\alpha }}}}{e^{\frac {s}{\alpha }}+e^{-{\frac {s}{\alpha }}}}}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>f</mi>
+        <mo stretchy="false">(</mo>
+        <mi>s</mi>
+        <mo stretchy="false">)</mo>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mi mathvariant="normal">t</mi>
+          <mi mathvariant="normal">h</mi>
+        </mrow>
+        <mspace width="thinmathspace"></mspace>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mi>s</mi>
+            <mi>α<!-- α --></mi>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <msup>
+                <mi>e</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mfrac>
+                    <mi>s</mi>
+                    <mi>α<!-- α --></mi>
+                  </mfrac>
+                </mrow>
+              </msup>
+              <mo>−<!-- − --></mo>
+              <msup>
+                <mi>e</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo>−<!-- − --></mo>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mfrac>
+                      <mi>s</mi>
+                      <mi>α<!-- α --></mi>
+                    </mfrac>
+                  </mrow>
+                </mrow>
+              </msup>
+            </mrow>
+            <mrow>
+              <msup>
+                <mi>e</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mfrac>
+                    <mi>s</mi>
+                    <mi>α<!-- α --></mi>
+                  </mfrac>
+                </mrow>
+              </msup>
+              <mo>+</mo>
+              <msup>
+                <mi>e</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo>−<!-- − --></mo>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mfrac>
+                      <mi>s</mi>
+                      <mi>α<!-- α --></mi>
+                    </mfrac>
+                  </mrow>
+                </mrow>
+              </msup>
+            </mrow>
+          </mfrac>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle f(s)=\mathrm {th} \,{\frac {s}{\alpha }}={\frac {e^{\frac {s}{\alpha }}-e^{-{\frac {s}{\alpha }}}}{e^{\frac {s}{\alpha }}+e^{-{\frac {s}{\alpha }}}}}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/9d48367968d2ea7d8bc8981eaf20db0235b479da" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -2.838ex; width:26.25ex; height:7.009ex;" alt="{\displaystyle f(s)=\mathrm {th} \,{\frac {s}{\alpha }}={\frac {e^{\frac {s}{\alpha }}-e^{-{\frac {s}{\alpha }}}}{e^{\frac {s}{\alpha }}+e^{-{\frac {s}{\alpha }}}}}}"/></span>,</dd></dl>
+
+<p id="mwQw">где <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt13" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"s"}}' id="mwRA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle s}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>s</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle s}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/01d131dfd7673938b947072a13a9744fe997e632" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:1.09ex; height:1.676ex;" alt="{\displaystyle s}"/></span> — выход сумматора нейрона, <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt14" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\alpha"}}' id="mwRQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \alpha }">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>α<!-- α --></mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \alpha }</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/b79333175c8b3f0840bfb4ec41b8072c83ea88d3" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:1.488ex; height:1.676ex;" alt="{\displaystyle \alpha }"/></span> — произвольная константа.</p>
+
+<p id="mwRg">Наименьшее количество процессорного времени, по сравнению с другими сигмоидами, требует расчёт рациональной сигмоиды. Для вычисления гиперболического тангенса требуется больше всего тактов работы процессора. Если же сравнивать с пороговыми функциями активации, то сигмоиды рассчитываются очень медленно. Если после суммирования в пороговой функции сразу можно начинать сравнение с определённой величиной (порогом), то в случае сигмоидальной функции активации нужно рассчитать сигмоиду (затратить время в лучшем случае на три операции: взятие модуля, сложение и деление), и только потом сравнивать с пороговой величиной (например, нулём). Если считать, что все простейшие операции рассчитываются процессором за примерно одинаковое время, то работа сигмоидальной функции активации после произведённого суммирования (которое займёт одинаковое время) будет медленнее пороговой функции активации в 4 раза.</p>
+
+</section><section data-mw-section-id="2" id="mwRw"><h2 id="Функция_оценки_работы_сети"><span id=".D0.A4.D1.83.D0.BD.D0.BA.D1.86.D0.B8.D1.8F_.D0.BE.D1.86.D0.B5.D0.BD.D0.BA.D0.B8_.D1.80.D0.B0.D0.B1.D0.BE.D1.82.D1.8B_.D1.81.D0.B5.D1.82.D0.B8" typeof="mw:FallbackId"></span>Функция оценки работы сети</h2>
+<p id="mwSA">В тех случаях, когда удаётся оценить работу сети, обучение <a rel="mw:WikiLink" href="./Нейронная_сеть" title="Нейронная сеть" id="mwSQ">нейронных сетей</a> можно представить как задачу оптимизации. Оценить — означает указать количественно, хорошо или плохо сеть решает поставленные ей задачи. Для этого строится функция оценки. Она, как правило, явно зависит от выходных сигналов сети и неявно (через функционирование) — от всех её параметров. Простейший и самый распространённый пример оценки — сумма квадратов расстояний от выходных сигналов сети до их требуемых значений:</p>
+
+<dl id="mwSg"><dd id="mwSw"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt15" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"H = \\tfrac{1}{2} \\sum_{\\tau \\in v_\\mathrm{out}} (Z(\\tau) - Z^*(\\tau))^2 "}}' id="mwTA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle H={\tfrac {1}{2}}\sum _{\tau \in v_{\mathrm {out} }}(Z(\tau )-Z^{*}(\tau ))^{2}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>H</mi>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mstyle displaystyle="false" scriptlevel="0">
+            <mfrac>
+              <mn>1</mn>
+              <mn>2</mn>
+            </mfrac>
+          </mstyle>
+        </mrow>
+        <munder>
+          <mo>∑<!-- ∑ --></mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>τ<!-- τ --></mi>
+            <mo>∈<!-- ∈ --></mo>
+            <msub>
+              <mi>v</mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">o</mi>
+                  <mi mathvariant="normal">u</mi>
+                  <mi mathvariant="normal">t</mi>
+                </mrow>
+              </mrow>
+            </msub>
+          </mrow>
+        </munder>
+        <mo stretchy="false">(</mo>
+        <mi>Z</mi>
+        <mo stretchy="false">(</mo>
+        <mi>τ<!-- τ --></mi>
+        <mo stretchy="false">)</mo>
+        <mo>−<!-- − --></mo>
+        <msup>
+          <mi>Z</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo>∗<!-- ∗ --></mo>
+          </mrow>
+        </msup>
+        <mo stretchy="false">(</mo>
+        <mi>τ<!-- τ --></mi>
+        <mo stretchy="false">)</mo>
+        <msup>
+          <mo stretchy="false">)</mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>2</mn>
+          </mrow>
+        </msup>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle H={\tfrac {1}{2}}\sum _{\tau \in v_{\mathrm {out} }}(Z(\tau )-Z^{*}(\tau ))^{2}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/9d31688e0f561b0a79013c3eb9005a95c54004d8" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.171ex; width:28.213ex; height:5.676ex;" alt="{\displaystyle H={\tfrac {1}{2}}\sum _{\tau \in v_{\mathrm {out} }}(Z(\tau )-Z^{*}(\tau ))^{2}}"/></span>,</dd></dl>
+
+<p id="mwTQ">где <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt16" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"Z^*(\\tau)"}}' id="mwTg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle Z^{*}(\tau )}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msup>
+          <mi>Z</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo>∗<!-- ∗ --></mo>
+          </mrow>
+        </msup>
+        <mo stretchy="false">(</mo>
+        <mi>τ<!-- τ --></mi>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle Z^{*}(\tau )}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/ee6c96744382b6de1ac65abe1d40dba30e22a230" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:5.774ex; height:2.843ex;" alt="{\displaystyle Z^{*}(\tau )}"/></span> — требуемое значение выходного сигнала.</p>
+
+<p id="mwTw"><a rel="mw:WikiLink" href="./Метод_наименьших_квадратов" title="Метод наименьших квадратов" id="mwUA">Метод наименьших квадратов</a> далеко не всегда является лучшим выбором оценки. Тщательное конструирование <a rel="mw:WikiLink" href="./Функция_потерь" title="Функция потерь" id="mwUQ">функции оценки</a> позволяет на порядок повысить эффективность обучения сети, а также получать дополнительную информацию — «уровень уверенности» сети в даваемом ответе<sup about="#mwt19" class="mw-ref reference" id="cite_ref-7" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-7"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-7" id="mwUg"><span class="mw-reflink-text" id="mwUw"><span class="cite-bracket" id="mwVA">[</span>7<span class="cite-bracket" id="mwVQ">]</span></span></a></sup>.</p>
+
+</section><section data-mw-section-id="3" id="mwVg"><h2 id="Описание_алгоритма"><span id=".D0.9E.D0.BF.D0.B8.D1.81.D0.B0.D0.BD.D0.B8.D0.B5_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.B0" typeof="mw:FallbackId"></span>Описание алгоритма</h2>
+<figure class="mw-halign-left" typeof="mw:File/Thumb" id="mwVw"><a href="./Файл:Neuro.PNG" class="mw-file-description" id="mwWA"><img resource="./Файл:Neuro.PNG" src="//upload.wikimedia.org/wikipedia/ru/thumb/d/de/Neuro.PNG/500px-Neuro.PNG" decoding="async" data-file-width="958" data-file-height="455" data-file-type="bitmap" height="190" width="400" srcset="//upload.wikimedia.org/wikipedia/ru/d/de/Neuro.PNG 2x" class="mw-file-element" id="mwWQ"/></a><figcaption id="mwWg"> Архитектура многослойного перцептрона</figcaption></figure>
+
+<p id="mwWw">Алгоритм обратного распространения ошибки применяется для <a rel="mw:WikiLink" href="./Многослойный_перцептрон_Румельхарта" title="Многослойный перцептрон Румельхарта" id="mwXA">многослойного перцептрона</a>. У сети есть множество входов <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt20" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"x_1, \\dots, x_n"}}' id="mwXQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle x_{1},\dots ,x_{n}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>x</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>1</mn>
+          </mrow>
+        </msub>
+        <mo>,</mo>
+        <mo>…<!-- … --></mo>
+        <mo>,</mo>
+        <msub>
+          <mi>x</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>n</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle x_{1},\dots ,x_{n}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/e5afdbc2d248d8fa9ba2c4f5188d946a0537e753" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:10.11ex; height:2.009ex;" alt="{\displaystyle x_{1},\dots ,x_{n}}"/></span>, множество выходов Outputs и множество внутренних узлов. Перенумеруем все узлы (включая входы и выходы) числами от 1 до <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt21" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"N"}}' id="mwXg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle N}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>N</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle N}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/f5e3890c981ae85503089652feb48b191b57aae3" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:2.064ex; height:2.176ex;" alt="{\displaystyle N}"/></span> (сквозная нумерация, вне зависимости от топологии слоёв). Обозначим через <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt22" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"w_{i,j}"}}' id="mwXw"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle w_{i,j}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle w_{i,j}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/74b8357cf4bdec82c6ac941e957172036db17bd7" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:3.599ex; height:2.343ex;" alt="{\displaystyle w_{i,j}}"/></span> вес, стоящий на ребре, соединяющем <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt23" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"i"}}' id="mwYA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle i}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>i</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle i}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/add78d8608ad86e54951b8c8bd6c8d8416533d20" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:0.802ex; height:2.176ex;" alt="{\displaystyle i}"/></span>-й и <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt24" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"j"}}' id="mwYQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle j}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>j</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle j}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/2f461e54f5c093e92a55547b9764291390f0b5d0" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; margin-left: -0.027ex; width:0.985ex; height:2.509ex;" alt="{\displaystyle j}"/></span>-й узлы, а через <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt25" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"o_i"}}' id="mwYg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle o_{i}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle o_{i}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/c81b6f1251a0d2e12011a746b586c5fa9a132d48" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:1.927ex; height:2.009ex;" alt="{\displaystyle o_{i}}"/></span> — выход <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt26" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"i"}}' id="mwYw"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle i}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>i</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle i}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/add78d8608ad86e54951b8c8bd6c8d8416533d20" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:0.802ex; height:2.176ex;" alt="{\displaystyle i}"/></span>-го узла. Если нам известен обучающий пример (правильные ответы сети <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt27" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"t_k"}}' id="mwZA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle t_{k}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>t</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle t_{k}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/79a3574d49db62b5bb645a1cedf19c19d342eb24" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:1.928ex; height:2.343ex;" alt="{\displaystyle t_{k}}"/></span>, <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt28" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"k \\in \\mathrm{Outputs}"}}' id="mwZQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle k\in \mathrm {Outputs} }">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>k</mi>
+        <mo>∈<!-- ∈ --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mi mathvariant="normal">O</mi>
+          <mi mathvariant="normal">u</mi>
+          <mi mathvariant="normal">t</mi>
+          <mi mathvariant="normal">p</mi>
+          <mi mathvariant="normal">u</mi>
+          <mi mathvariant="normal">t</mi>
+          <mi mathvariant="normal">s</mi>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle k\in \mathrm {Outputs} }</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/492c3b70f0d8bfc9ebfe8189afeefa2586dc06c3" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:12.463ex; height:2.509ex;" alt="{\displaystyle k\in \mathrm {Outputs} }"/></span>), то функция ошибки, полученная по <a rel="mw:WikiLink" href="./Метод_наименьших_квадратов" title="Метод наименьших квадратов" id="mwZg">методу наименьших квадратов</a>, выглядит так:</p>
+
+<dl id="mwZw"><dd id="mwaA"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt29" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"E(\\{w_{i,j}\\}) = \\tfrac{1}{2} \\!\\! \\sum_{k \\in \\mathrm{Outputs}} \\!\\!\\! (t_k - o_k)^2 "}}' id="mwaQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle E(\{w_{i,j}\})={\tfrac {1}{2}}\!\!\sum _{k\in \mathrm {Outputs} }\!\!\!(t_{k}-o_{k})^{2}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>E</mi>
+        <mo stretchy="false">(</mo>
+        <mo fence="false" stretchy="false">{</mo>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo fence="false" stretchy="false">}</mo>
+        <mo stretchy="false">)</mo>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mstyle displaystyle="false" scriptlevel="0">
+            <mfrac>
+              <mn>1</mn>
+              <mn>2</mn>
+            </mfrac>
+          </mstyle>
+        </mrow>
+        <mspace width="negativethinmathspace"></mspace>
+        <mspace width="negativethinmathspace"></mspace>
+        <munder>
+          <mo>∑<!-- ∑ --></mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+            <mo>∈<!-- ∈ --></mo>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mi mathvariant="normal">O</mi>
+              <mi mathvariant="normal">u</mi>
+              <mi mathvariant="normal">t</mi>
+              <mi mathvariant="normal">p</mi>
+              <mi mathvariant="normal">u</mi>
+              <mi mathvariant="normal">t</mi>
+              <mi mathvariant="normal">s</mi>
+            </mrow>
+          </mrow>
+        </munder>
+        <mspace width="negativethinmathspace"></mspace>
+        <mspace width="negativethinmathspace"></mspace>
+        <mspace width="negativethinmathspace"></mspace>
+        <mo stretchy="false">(</mo>
+        <msub>
+          <mi>t</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <msup>
+          <mo stretchy="false">)</mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>2</mn>
+          </mrow>
+        </msup>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle E(\{w_{i,j}\})={\tfrac {1}{2}}\!\!\sum _{k\in \mathrm {Outputs} }\!\!\!(t_{k}-o_{k})^{2}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/78c57cb0c9229b0698f980dd213390367f9b87d2" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.338ex; width:30.466ex; height:5.843ex;" alt="{\displaystyle E(\{w_{i,j}\})={\tfrac {1}{2}}\!\!\sum _{k\in \mathrm {Outputs} }\!\!\!(t_{k}-o_{k})^{2}}"/></span></dd></dl>
+
+<p id="mwag">Как модифицировать веса? Мы будем реализовывать стохастический <a rel="mw:WikiLink" href="./Градиентный_спуск" title="Градиентный спуск" id="mwaw">градиентный спуск</a>, то есть будем подправлять веса после каждого обучающего примера и, таким образом, «двигаться» в многомерном пространстве весов. Чтобы «добраться» до минимума ошибки, нам нужно «двигаться» в сторону, противоположную <a rel="mw:WikiLink" href="./Градиент" title="Градиент" id="mwbA">градиенту</a>, то есть, на основании каждой группы правильных ответов, добавлять к каждому весу <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt30" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"w_{i,j}"}}' id="mwbQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle w_{i,j}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle w_{i,j}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/74b8357cf4bdec82c6ac941e957172036db17bd7" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:3.599ex; height:2.343ex;" alt="{\displaystyle w_{i,j}}"/></span></p>
+
+<dl id="mwbg"><dd id="mwbw"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt31" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\Delta w_{i,j} = -\\eta \\frac {\\partial E}{\\partial w_{i,j}}"}}' id="mwcA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \Delta w_{i,j}=-\eta {\frac {\partial E}{\partial w_{i,j}}}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi mathvariant="normal">Δ<!-- Δ --></mi>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo>=</mo>
+        <mo>−<!-- − --></mo>
+        <mi>η<!-- η --></mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mi mathvariant="normal">∂<!-- ∂ --></mi>
+              <mi>E</mi>
+            </mrow>
+            <mrow>
+              <mi mathvariant="normal">∂<!-- ∂ --></mi>
+              <msub>
+                <mi>w</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi>i</mi>
+                  <mo>,</mo>
+                  <mi>j</mi>
+                </mrow>
+              </msub>
+            </mrow>
+          </mfrac>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \Delta w_{i,j}=-\eta {\frac {\partial E}{\partial w_{i,j}}}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/2052d6365a0a5778690f24686ed0f22491036de0" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -2.671ex; width:17.363ex; height:6.176ex;" alt="{\displaystyle \Delta w_{i,j}=-\eta {\frac {\partial E}{\partial w_{i,j}}}}"/></span>,</dd></dl>
+
+<p id="mwcQ">где <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt32" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"0 &lt; \\eta &lt; 1"}}' id="mwcg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle 0&lt;\eta &lt;1}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mn>0</mn>
+        <mo>&lt;</mo>
+        <mi>η<!-- η --></mi>
+        <mo>&lt;</mo>
+        <mn>1</mn>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle 0&lt;\eta &lt;1}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/9676097de21f4ec2dead2bee81c47da062013260" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:9.691ex; height:2.676ex;" alt="{\displaystyle 0&lt;\eta &lt;1}"/></span> — множитель, задающий скорость «движения».</p>
+
+<p id="mwcw">Производная считается следующим образом. Пусть сначала <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt33" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"j \\in \\mathrm{Outputs}"}}' id="mwdA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle j\in \mathrm {Outputs} }">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>j</mi>
+        <mo>∈<!-- ∈ --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mi mathvariant="normal">O</mi>
+          <mi mathvariant="normal">u</mi>
+          <mi mathvariant="normal">t</mi>
+          <mi mathvariant="normal">p</mi>
+          <mi mathvariant="normal">u</mi>
+          <mi mathvariant="normal">t</mi>
+          <mi mathvariant="normal">s</mi>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle j\in \mathrm {Outputs} }</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/617f52dd08d573e4748bbc8633c0f6baeb32addd" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; margin-left: -0.027ex; width:12.237ex; height:2.509ex;" alt="{\displaystyle j\in \mathrm {Outputs} }"/></span>, то есть интересующий нас вес входит в нейрон последнего уровня. Сначала отметим, что <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt34" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"w_{i,j}"}}' id="mwdQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle w_{i,j}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle w_{i,j}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/74b8357cf4bdec82c6ac941e957172036db17bd7" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:3.599ex; height:2.343ex;" alt="{\displaystyle w_{i,j}}"/></span> влияет на выход сети только как часть суммы <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt35" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"S_j = \\sum_{i} w_{i,j}x_{i}"}}' id="mwdg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle S_{j}=\sum _{i}w_{i,j}x_{i}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>S</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo>=</mo>
+        <munder>
+          <mo>∑<!-- ∑ --></mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+        </munder>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <msub>
+          <mi>x</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle S_{j}=\sum _{i}w_{i,j}x_{i}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/fed5520a8be53833b2ffa11497ed7f35f4f72def" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.005ex; width:14.903ex; height:5.509ex;" alt="{\displaystyle S_{j}=\sum _{i}w_{i,j}x_{i}}"/></span>, где сумма берётся по входам <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt36" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"j"}}' id="mwdw"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle j}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>j</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle j}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/2f461e54f5c093e92a55547b9764291390f0b5d0" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; margin-left: -0.027ex; width:0.985ex; height:2.509ex;" alt="{\displaystyle j}"/></span>-го узла. Поэтому</p>
+
+<dl id="mweA"><dd id="mweQ"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt37" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\cfrac{\\partial E}{\\partial w_{i,j}} = \\cfrac{\\partial E}{\\partial S_j}\\, \\cfrac{\\partial S_j}{\\partial w_{i,j}} = x_{i} \\cfrac{\\partial E}{\\partial S_j} "}}' id="mweg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle {\cfrac {\partial E}{\partial w_{i,j}}}={\cfrac {\partial E}{\partial S_{j}}}\,{\cfrac {\partial S_{j}}{\partial w_{i,j}}}=x_{i}{\cfrac {\partial E}{\partial S_{j}}}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <mi>E</mi>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>w</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>i</mi>
+                      <mo>,</mo>
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <mi>E</mi>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mspace width="thinmathspace"></mspace>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>w</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>i</mi>
+                      <mo>,</mo>
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <msub>
+          <mi>x</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+        </msub>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <mi>E</mi>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle {\cfrac {\partial E}{\partial w_{i,j}}}={\cfrac {\partial E}{\partial S_{j}}}\,{\cfrac {\partial S_{j}}{\partial w_{i,j}}}=x_{i}{\cfrac {\partial E}{\partial S_{j}}}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/14ac7cdecfdb61d474d56834a3bfbf60d2fecbf9" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.005ex; width:29.197ex; height:7.176ex;" alt="{\displaystyle {\cfrac {\partial E}{\partial w_{i,j}}}={\cfrac {\partial E}{\partial S_{j}}}\,{\cfrac {\partial S_{j}}{\partial w_{i,j}}}=x_{i}{\cfrac {\partial E}{\partial S_{j}}}}"/></span></dd></dl>
+
+<p id="mwew">Аналогично, <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt38" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"S_j"}}' id="mwfA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle S_{j}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>S</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle S_{j}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/222db49df2eefdb67737ba2d2dbd221a1bae0bf0" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:2.335ex; height:2.843ex;" alt="{\displaystyle S_{j}}"/></span> влияет на общую ошибку только в рамках выхода <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt39" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"j"}}' id="mwfQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle j}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>j</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle j}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/2f461e54f5c093e92a55547b9764291390f0b5d0" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; margin-left: -0.027ex; width:0.985ex; height:2.509ex;" alt="{\displaystyle j}"/></span>-го узла <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt40" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"o_j"}}' id="mwfg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle o_{j}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle o_{j}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/0229f31d42e856d5af6aa970042abed37bce87f9" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:2.037ex; height:2.343ex;" alt="{\displaystyle o_{j}}"/></span> (напоминаем, что это выход всей сети). Поэтому</p>
+
+<dl id="mwfw"><dd id="mwgA"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt41" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\cfrac{\\partial E}{\\partial S_j} = \\cfrac{\\partial E}{\\partial o_j}\\,\\cfrac{\\partial o_j}{\\partial S_j} = \\left (\\cfrac{\\partial}{\\partial o_j}\\,\\cfrac{1}{2}\\sum_{k \\in \\mathrm{Outputs}}(t_k - o_k)^2 \\right ) \\!\\! \\left (\\cfrac{\\partial \\operatorname{f}(S)}{\\partial S}\\mid_{S=S_j} \\right) ="}}' id="mwgQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle {\cfrac {\partial E}{\partial S_{j}}}={\cfrac {\partial E}{\partial o_{j}}}\,{\cfrac {\partial o_{j}}{\partial S_{j}}}=\left({\cfrac {\partial }{\partial o_{j}}}\,{\cfrac {1}{2}}\sum _{k\in \mathrm {Outputs} }(t_{k}-o_{k})^{2}\right)\!\!\left({\cfrac {\partial \operatorname {f} (S)}{\partial S}}\mid _{S=S_{j}}\right)=}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <mi>E</mi>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <mi>E</mi>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>o</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mspace width="thinmathspace"></mspace>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>o</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mfrac>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                      <msub>
+                        <mi>o</mi>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mi>j</mi>
+                        </mrow>
+                      </msub>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+              </mfrac>
+            </mrow>
+            <mspace width="thinmathspace"></mspace>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mfrac>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mn>1</mn>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mn>2</mn>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+              </mfrac>
+            </mrow>
+            <munder>
+              <mo>∑<!-- ∑ --></mo>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mi>k</mi>
+                <mo>∈<!-- ∈ --></mo>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">O</mi>
+                  <mi mathvariant="normal">u</mi>
+                  <mi mathvariant="normal">t</mi>
+                  <mi mathvariant="normal">p</mi>
+                  <mi mathvariant="normal">u</mi>
+                  <mi mathvariant="normal">t</mi>
+                  <mi mathvariant="normal">s</mi>
+                </mrow>
+              </mrow>
+            </munder>
+            <mo stretchy="false">(</mo>
+            <msub>
+              <mi>t</mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mi>k</mi>
+              </mrow>
+            </msub>
+            <mo>−<!-- − --></mo>
+            <msub>
+              <mi>o</mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mi>k</mi>
+              </mrow>
+            </msub>
+            <msup>
+              <mo stretchy="false">)</mo>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mn>2</mn>
+              </mrow>
+            </msup>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mspace width="negativethinmathspace"></mspace>
+        <mspace width="negativethinmathspace"></mspace>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mfrac>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                      <mi mathvariant="normal">f</mi>
+                      <mo>⁡<!-- ⁡ --></mo>
+                      <mo stretchy="false">(</mo>
+                      <mi>S</mi>
+                      <mo stretchy="false">)</mo>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                      <mi>S</mi>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+              </mfrac>
+            </mrow>
+            <msub>
+              <mo stretchy="false">∣<!-- ∣ --></mo>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mi>S</mi>
+                <mo>=</mo>
+                <msub>
+                  <mi>S</mi>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mi>j</mi>
+                  </mrow>
+                </msub>
+              </mrow>
+            </msub>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mo>=</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle {\cfrac {\partial E}{\partial S_{j}}}={\cfrac {\partial E}{\partial o_{j}}}\,{\cfrac {\partial o_{j}}{\partial S_{j}}}=\left({\cfrac {\partial }{\partial o_{j}}}\,{\cfrac {1}{2}}\sum _{k\in \mathrm {Outputs} }(t_{k}-o_{k})^{2}\right)\!\!\left({\cfrac {\partial \operatorname {f} (S)}{\partial S}}\mid _{S=S_{j}}\right)=}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/1785d077a1b3da8561937d5b201737bd5de6cfd1" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.338ex; width:65.55ex; height:7.676ex;" alt="{\displaystyle {\cfrac {\partial E}{\partial S_{j}}}={\cfrac {\partial E}{\partial o_{j}}}\,{\cfrac {\partial o_{j}}{\partial S_{j}}}=\left({\cfrac {\partial }{\partial o_{j}}}\,{\cfrac {1}{2}}\sum _{k\in \mathrm {Outputs} }(t_{k}-o_{k})^{2}\right)\!\!\left({\cfrac {\partial \operatorname {f} (S)}{\partial S}}\mid _{S=S_{j}}\right)=}"/></span></dd>
+<dd id="mwgg"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt42" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"= \\left ( \\cfrac{1}{2}\\, \\cfrac{\\partial}{\\partial o_j}(t_j - o_j)^2 \\right) (o_j(1 - o_j)) 2\\alpha =\n- 2 \\alpha o_j(1 - o_j)(t_j - o_j)."}}' id="mwgw"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle =\left({\cfrac {1}{2}}\,{\cfrac {\partial }{\partial o_{j}}}(t_{j}-o_{j})^{2}\right)(o_{j}(1-o_{j}))2\alpha =-2\alpha o_{j}(1-o_{j})(t_{j}-o_{j}).}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mo>=</mo>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mfrac>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mn>1</mn>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mn>2</mn>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+              </mfrac>
+            </mrow>
+            <mspace width="thinmathspace"></mspace>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mfrac>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+                <mrow>
+                  <mpadded width="0" height="8.6pt" depth="3pt">
+                    <mrow></mrow>
+                  </mpadded>
+                  <mstyle displaystyle="false" scriptlevel="0">
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                      <msub>
+                        <mi>o</mi>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mi>j</mi>
+                        </mrow>
+                      </msub>
+                    </mrow>
+                  </mstyle>
+                </mrow>
+              </mfrac>
+            </mrow>
+            <mo stretchy="false">(</mo>
+            <msub>
+              <mi>t</mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mi>j</mi>
+              </mrow>
+            </msub>
+            <mo>−<!-- − --></mo>
+            <msub>
+              <mi>o</mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mi>j</mi>
+              </mrow>
+            </msub>
+            <msup>
+              <mo stretchy="false">)</mo>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mn>2</mn>
+              </mrow>
+            </msup>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mo stretchy="false">(</mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">(</mo>
+        <mn>1</mn>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+        <mo stretchy="false">)</mo>
+        <mn>2</mn>
+        <mi>α<!-- α --></mi>
+        <mo>=</mo>
+        <mo>−<!-- − --></mo>
+        <mn>2</mn>
+        <mi>α<!-- α --></mi>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">(</mo>
+        <mn>1</mn>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+        <mo stretchy="false">(</mo>
+        <msub>
+          <mi>t</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+        <mo>.</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle =\left({\cfrac {1}{2}}\,{\cfrac {\partial }{\partial o_{j}}}(t_{j}-o_{j})^{2}\right)(o_{j}(1-o_{j}))2\alpha =-2\alpha o_{j}(1-o_{j})(t_{j}-o_{j}).}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/e55394e2229c63a3df35f5009d90b3bbb3fb6efa" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.171ex; width:63.462ex; height:7.509ex;" alt="{\displaystyle =\left({\cfrac {1}{2}}\,{\cfrac {\partial }{\partial o_{j}}}(t_{j}-o_{j})^{2}\right)(o_{j}(1-o_{j}))2\alpha =-2\alpha o_{j}(1-o_{j})(t_{j}-o_{j}).}"/></span></dd></dl>
+
+<p id="mwhA">где <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt43" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"f(S)"}}' id="mwhQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle f(S)}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>f</mi>
+        <mo stretchy="false">(</mo>
+        <mi>S</mi>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle f(S)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/99a865d36b32ea1d60f15dc3093f5b28093f192b" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:4.587ex; height:2.843ex;" alt="{\displaystyle f(S)}"/></span> — соответствующая сигмоида, в данном случае — экспоненциальная</p>
+
+<dl id="mwhg"><dd id="mwhw"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt44" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\frac{\\partial{(\\frac{1}{1+e^{-2\\alpha S}})}}{\\partial{S}} = \\frac{-1}{(1+e^{-2\\alpha S})^2} \\times \\frac{\\partial{(1+e^{-2\\alpha S})}}{\\partial{S}} = \\frac{-1}{(1+e^{-2\\alpha S})^2} \\times (-2\\alpha e^{-2\\alpha S}) = "}}' id="mwiA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle {\frac {\partial {({\frac {1}{1+e^{-2\alpha S}}})}}{\partial {S}}}={\frac {-1}{(1+e^{-2\alpha S})^{2}}}\times {\frac {\partial {(1+e^{-2\alpha S})}}{\partial {S}}}={\frac {-1}{(1+e^{-2\alpha S})^{2}}}\times (-2\alpha e^{-2\alpha S})=}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mi mathvariant="normal">∂<!-- ∂ --></mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mo stretchy="false">(</mo>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mfrac>
+                    <mn>1</mn>
+                    <mrow>
+                      <mn>1</mn>
+                      <mo>+</mo>
+                      <msup>
+                        <mi>e</mi>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mo>−<!-- − --></mo>
+                          <mn>2</mn>
+                          <mi>α<!-- α --></mi>
+                          <mi>S</mi>
+                        </mrow>
+                      </msup>
+                    </mrow>
+                  </mfrac>
+                </mrow>
+                <mo stretchy="false">)</mo>
+              </mrow>
+            </mrow>
+            <mrow>
+              <mi mathvariant="normal">∂<!-- ∂ --></mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mi>S</mi>
+              </mrow>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mo>−<!-- − --></mo>
+              <mn>1</mn>
+            </mrow>
+            <mrow>
+              <mo stretchy="false">(</mo>
+              <mn>1</mn>
+              <mo>+</mo>
+              <msup>
+                <mi>e</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo>−<!-- − --></mo>
+                  <mn>2</mn>
+                  <mi>α<!-- α --></mi>
+                  <mi>S</mi>
+                </mrow>
+              </msup>
+              <msup>
+                <mo stretchy="false">)</mo>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mn>2</mn>
+                </mrow>
+              </msup>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>×<!-- × --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mi mathvariant="normal">∂<!-- ∂ --></mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mo stretchy="false">(</mo>
+                <mn>1</mn>
+                <mo>+</mo>
+                <msup>
+                  <mi>e</mi>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mo>−<!-- − --></mo>
+                    <mn>2</mn>
+                    <mi>α<!-- α --></mi>
+                    <mi>S</mi>
+                  </mrow>
+                </msup>
+                <mo stretchy="false">)</mo>
+              </mrow>
+            </mrow>
+            <mrow>
+              <mi mathvariant="normal">∂<!-- ∂ --></mi>
+              <mrow class="MJX-TeXAtom-ORD">
+                <mi>S</mi>
+              </mrow>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mo>−<!-- − --></mo>
+              <mn>1</mn>
+            </mrow>
+            <mrow>
+              <mo stretchy="false">(</mo>
+              <mn>1</mn>
+              <mo>+</mo>
+              <msup>
+                <mi>e</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo>−<!-- − --></mo>
+                  <mn>2</mn>
+                  <mi>α<!-- α --></mi>
+                  <mi>S</mi>
+                </mrow>
+              </msup>
+              <msup>
+                <mo stretchy="false">)</mo>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mn>2</mn>
+                </mrow>
+              </msup>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>×<!-- × --></mo>
+        <mo stretchy="false">(</mo>
+        <mo>−<!-- − --></mo>
+        <mn>2</mn>
+        <mi>α<!-- α --></mi>
+        <msup>
+          <mi>e</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo>−<!-- − --></mo>
+            <mn>2</mn>
+            <mi>α<!-- α --></mi>
+            <mi>S</mi>
+          </mrow>
+        </msup>
+        <mo stretchy="false">)</mo>
+        <mo>=</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle {\frac {\partial {({\frac {1}{1+e^{-2\alpha S}}})}}{\partial {S}}}={\frac {-1}{(1+e^{-2\alpha S})^{2}}}\times {\frac {\partial {(1+e^{-2\alpha S})}}{\partial {S}}}={\frac {-1}{(1+e^{-2\alpha S})^{2}}}\times (-2\alpha e^{-2\alpha S})=}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/81cb7c8dd499240a3fe21f1e0908bcad59741c93" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -2.671ex; width:77.334ex; height:7.676ex;" alt="{\displaystyle {\frac {\partial {({\frac {1}{1+e^{-2\alpha S}}})}}{\partial {S}}}={\frac {-1}{(1+e^{-2\alpha S})^{2}}}\times {\frac {\partial {(1+e^{-2\alpha S})}}{\partial {S}}}={\frac {-1}{(1+e^{-2\alpha S})^{2}}}\times (-2\alpha e^{-2\alpha S})=}"/></span></dd>
+<dd id="mwiQ"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt45" data-mw='{"name":"math","attrs":{},"body":{"extsrc":" = \\frac{2\\alpha e^{-2\\alpha S}}{(1+e^{-2\\alpha S})^2} = \\left(\\frac{1+e^{-2\\alpha S}}{(1+e^{-2\\alpha S})^2} - \\frac{1}{(1+e^{-2\\alpha S})^2}\\right) \\times 2\\alpha = 2\\alpha(\\operatorname{f}(S) - \\operatorname{f^2}(S))"}}' id="mwig"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle ={\frac {2\alpha e^{-2\alpha S}}{(1+e^{-2\alpha S})^{2}}}=\left({\frac {1+e^{-2\alpha S}}{(1+e^{-2\alpha S})^{2}}}-{\frac {1}{(1+e^{-2\alpha S})^{2}}}\right)\times 2\alpha =2\alpha (\operatorname {f} (S)-\operatorname {f^{2}} (S))}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mn>2</mn>
+              <mi>α<!-- α --></mi>
+              <msup>
+                <mi>e</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo>−<!-- − --></mo>
+                  <mn>2</mn>
+                  <mi>α<!-- α --></mi>
+                  <mi>S</mi>
+                </mrow>
+              </msup>
+            </mrow>
+            <mrow>
+              <mo stretchy="false">(</mo>
+              <mn>1</mn>
+              <mo>+</mo>
+              <msup>
+                <mi>e</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo>−<!-- − --></mo>
+                  <mn>2</mn>
+                  <mi>α<!-- α --></mi>
+                  <mi>S</mi>
+                </mrow>
+              </msup>
+              <msup>
+                <mo stretchy="false">)</mo>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mn>2</mn>
+                </mrow>
+              </msup>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mfrac>
+                <mrow>
+                  <mn>1</mn>
+                  <mo>+</mo>
+                  <msup>
+                    <mi>e</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mo>−<!-- − --></mo>
+                      <mn>2</mn>
+                      <mi>α<!-- α --></mi>
+                      <mi>S</mi>
+                    </mrow>
+                  </msup>
+                </mrow>
+                <mrow>
+                  <mo stretchy="false">(</mo>
+                  <mn>1</mn>
+                  <mo>+</mo>
+                  <msup>
+                    <mi>e</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mo>−<!-- − --></mo>
+                      <mn>2</mn>
+                      <mi>α<!-- α --></mi>
+                      <mi>S</mi>
+                    </mrow>
+                  </msup>
+                  <msup>
+                    <mo stretchy="false">)</mo>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mn>2</mn>
+                    </mrow>
+                  </msup>
+                </mrow>
+              </mfrac>
+            </mrow>
+            <mo>−<!-- − --></mo>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mfrac>
+                <mn>1</mn>
+                <mrow>
+                  <mo stretchy="false">(</mo>
+                  <mn>1</mn>
+                  <mo>+</mo>
+                  <msup>
+                    <mi>e</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mo>−<!-- − --></mo>
+                      <mn>2</mn>
+                      <mi>α<!-- α --></mi>
+                      <mi>S</mi>
+                    </mrow>
+                  </msup>
+                  <msup>
+                    <mo stretchy="false">)</mo>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mn>2</mn>
+                    </mrow>
+                  </msup>
+                </mrow>
+              </mfrac>
+            </mrow>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mo>×<!-- × --></mo>
+        <mn>2</mn>
+        <mi>α<!-- α --></mi>
+        <mo>=</mo>
+        <mn>2</mn>
+        <mi>α<!-- α --></mi>
+        <mo stretchy="false">(</mo>
+        <mi mathvariant="normal">f</mi>
+        <mo>⁡<!-- ⁡ --></mo>
+        <mo stretchy="false">(</mo>
+        <mi>S</mi>
+        <mo stretchy="false">)</mo>
+        <mo>−<!-- − --></mo>
+        <mrow class="MJX-TeXAtom-OP MJX-fixedlimits">
+          <msup>
+            <mi mathvariant="normal">f</mi>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mn>2</mn>
+            </mrow>
+          </msup>
+        </mrow>
+        <mo>⁡<!-- ⁡ --></mo>
+        <mo stretchy="false">(</mo>
+        <mi>S</mi>
+        <mo stretchy="false">)</mo>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle ={\frac {2\alpha e^{-2\alpha S}}{(1+e^{-2\alpha S})^{2}}}=\left({\frac {1+e^{-2\alpha S}}{(1+e^{-2\alpha S})^{2}}}-{\frac {1}{(1+e^{-2\alpha S})^{2}}}\right)\times 2\alpha =2\alpha (\operatorname {f} (S)-\operatorname {f^{2}} (S))}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/45a36783dcf06dc902d17554b7e44e5adea75275" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -2.671ex; width:76.842ex; height:6.509ex;" alt="{\displaystyle ={\frac {2\alpha e^{-2\alpha S}}{(1+e^{-2\alpha S})^{2}}}=\left({\frac {1+e^{-2\alpha S}}{(1+e^{-2\alpha S})^{2}}}-{\frac {1}{(1+e^{-2\alpha S})^{2}}}\right)\times 2\alpha =2\alpha (\operatorname {f} (S)-\operatorname {f^{2}} (S))}"/></span></dd></dl>
+
+<p id="mwiw">Если же <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt46" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"j"}}' id="mwjA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle j}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>j</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle j}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/2f461e54f5c093e92a55547b9764291390f0b5d0" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; margin-left: -0.027ex; width:0.985ex; height:2.509ex;" alt="{\displaystyle j}"/></span>-й узел — не на последнем уровне, то у него есть выходы; обозначим их через Children(<i id="mwjQ">j</i>). В этом случае</p>
+
+<dl id="mwjg"><dd id="mwjw"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt47" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\cfrac{\\partial E}{\\partial S_j} = \\sum_{k \\in \\mathrm{Children}(j)} \\cfrac{\\partial E}{\\partial S_k}\\, \\cfrac{\\partial S_k}{\\partial S_j} "}}' id="mwkA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle {\cfrac {\partial E}{\partial S_{j}}}=\sum _{k\in \mathrm {Children} (j)}{\cfrac {\partial E}{\partial S_{k}}}\,{\cfrac {\partial S_{k}}{\partial S_{j}}}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <mi>E</mi>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <munder>
+          <mo>∑<!-- ∑ --></mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+            <mo>∈<!-- ∈ --></mo>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mi mathvariant="normal">C</mi>
+              <mi mathvariant="normal">h</mi>
+              <mi mathvariant="normal">i</mi>
+              <mi mathvariant="normal">l</mi>
+              <mi mathvariant="normal">d</mi>
+              <mi mathvariant="normal">r</mi>
+              <mi mathvariant="normal">e</mi>
+              <mi mathvariant="normal">n</mi>
+            </mrow>
+            <mo stretchy="false">(</mo>
+            <mi>j</mi>
+            <mo stretchy="false">)</mo>
+          </mrow>
+        </munder>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <mi>E</mi>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>k</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mspace width="thinmathspace"></mspace>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>k</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle {\cfrac {\partial E}{\partial S_{j}}}=\sum _{k\in \mathrm {Children} (j)}{\cfrac {\partial E}{\partial S_{k}}}\,{\cfrac {\partial S_{k}}{\partial S_{j}}}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/961abb7d13895e8068c5a85f1aa17f4767020893" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.505ex; width:27.825ex; height:7.676ex;" alt="{\displaystyle {\cfrac {\partial E}{\partial S_{j}}}=\sum _{k\in \mathrm {Children} (j)}{\cfrac {\partial E}{\partial S_{k}}}\,{\cfrac {\partial S_{k}}{\partial S_{j}}}}"/></span>,</dd></dl>
+
+<p id="mwkQ">и</p>
+
+<dl id="mwkg"><dd id="mwkw"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt48" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\cfrac{\\partial S_k}{\\partial S_j} = \\cfrac{\\partial S_k}{\\partial o_j}\\, \\cfrac{\\partial o_j}{\\partial S_j} = w_{j,k} \\cfrac{\\partial o_j}{\\partial S_j} = 2\\alpha w_{j,k}o_j(1 - o_j)"}}' id="mwlA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle {\cfrac {\partial S_{k}}{\partial S_{j}}}={\cfrac {\partial S_{k}}{\partial o_{j}}}\,{\cfrac {\partial o_{j}}{\partial S_{j}}}=w_{j,k}{\cfrac {\partial o_{j}}{\partial S_{j}}}=2\alpha w_{j,k}o_{j}(1-o_{j})}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>k</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>k</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>o</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mspace width="thinmathspace"></mspace>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>o</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+            <mo>,</mo>
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>o</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+        <mo>=</mo>
+        <mn>2</mn>
+        <mi>α<!-- α --></mi>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+            <mo>,</mo>
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">(</mo>
+        <mn>1</mn>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle {\cfrac {\partial S_{k}}{\partial S_{j}}}={\cfrac {\partial S_{k}}{\partial o_{j}}}\,{\cfrac {\partial o_{j}}{\partial S_{j}}}=w_{j,k}{\cfrac {\partial o_{j}}{\partial S_{j}}}=2\alpha w_{j,k}o_{j}(1-o_{j})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/3fc63bf30b3f30e132fe72e4b0f3c28e89e2f054" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.005ex; width:48.308ex; height:7.176ex;" alt="{\displaystyle {\cfrac {\partial S_{k}}{\partial S_{j}}}={\cfrac {\partial S_{k}}{\partial o_{j}}}\,{\cfrac {\partial o_{j}}{\partial S_{j}}}=w_{j,k}{\cfrac {\partial o_{j}}{\partial S_{j}}}=2\alpha w_{j,k}o_{j}(1-o_{j})}"/></span>.</dd></dl>
+
+<p id="mwlQ">Но <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt49" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\cfrac{\\partial E}{\\partial S_k}"}}' id="mwlg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle {\cfrac {\partial E}{\partial S_{k}}}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <mi>E</mi>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>S</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>k</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle {\cfrac {\partial E}{\partial S_{k}}}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/eda1bbf321fc11d90206853d2d39e946e4462e71" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.005ex; width:4.668ex; height:7.176ex;" alt="{\displaystyle {\cfrac {\partial E}{\partial S_{k}}}}"/></span> — это в точности аналогичная поправка, но вычисленная для узла следующего уровня. Будем обозначать её через <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt50" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\delta _k"}}' id="mwlw"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \delta _{k}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>δ<!-- δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \delta _{k}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/74fee48740841008fe3a4585440d650dbea735ac" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:2.121ex; height:2.676ex;" alt="{\displaystyle \delta _{k}}"/></span> — от <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt51" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\Delta _k"}}' id="mwmA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \Delta _{k}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi mathvariant="normal">Δ<!-- Δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \Delta _{k}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/47b4add0e30c998b6392f82212f6d3365a00f63d" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:3.025ex; height:2.509ex;" alt="{\displaystyle \Delta _{k}}"/></span> она отличается отсутствием множителя <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt52" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"(-\\eta x_{i,j})"}}' id="mwmQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle (-\eta x_{i,j})}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mo stretchy="false">(</mo>
+        <mo>−<!-- − --></mo>
+        <mi>η<!-- η --></mi>
+        <msub>
+          <mi>x</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle (-\eta x_{i,j})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/31d99e43ca366b262015b34b452af6ab6ab57c63" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:8.051ex; height:3.009ex;" alt="{\displaystyle (-\eta x_{i,j})}"/></span>. Поскольку мы научились вычислять поправку для узлов последнего уровня и выражать поправку для узла более низкого уровня через поправки более высокого, можно уже писать алгоритм. Именно из-за этой особенности вычисления
+поправок алгоритм называется <b id="mwmg">алгоритмом обратного распространения ошибки</b>. Краткое резюме проделанной работы:</p>
+<ul id="mwmw"><li id="mwnA">для узла последнего уровня</li></ul>
+<p id="mwnQ"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt53" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\delta _j = -2\\alpha o_j(1 - o_j)(t_j - o_j)"}}' id="mwng"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \delta _{j}=-2\alpha o_{j}(1-o_{j})(t_{j}-o_{j})}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>δ<!-- δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo>=</mo>
+        <mo>−<!-- − --></mo>
+        <mn>2</mn>
+        <mi>α<!-- α --></mi>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">(</mo>
+        <mn>1</mn>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+        <mo stretchy="false">(</mo>
+        <msub>
+          <mi>t</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \delta _{j}=-2\alpha o_{j}(1-o_{j})(t_{j}-o_{j})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/f7ef319769c690e01650106cec9d29d4aa3c46bc" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:27.822ex; height:3.009ex;" alt="{\displaystyle \delta _{j}=-2\alpha o_{j}(1-o_{j})(t_{j}-o_{j})}"/></span></p>
+<ul id="mwnw"><li id="mwoA">для внутреннего узла сети</li></ul>
+<p id="mwoQ"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt54" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\delta _j = 2\\alpha o_j(1 - o_j) \\!\\! \\sum_{k \\in \\mathrm{Children}(j)} \\!\\! \\delta _k w_{j,k}"}}' id="mwog"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \delta _{j}=2\alpha o_{j}(1-o_{j})\!\!\sum _{k\in \mathrm {Children} (j)}\!\!\delta _{k}w_{j,k}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>δ<!-- δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo>=</mo>
+        <mn>2</mn>
+        <mi>α<!-- α --></mi>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">(</mo>
+        <mn>1</mn>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+        <mspace width="negativethinmathspace"></mspace>
+        <mspace width="negativethinmathspace"></mspace>
+        <munder>
+          <mo>∑<!-- ∑ --></mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+            <mo>∈<!-- ∈ --></mo>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mi mathvariant="normal">C</mi>
+              <mi mathvariant="normal">h</mi>
+              <mi mathvariant="normal">i</mi>
+              <mi mathvariant="normal">l</mi>
+              <mi mathvariant="normal">d</mi>
+              <mi mathvariant="normal">r</mi>
+              <mi mathvariant="normal">e</mi>
+              <mi mathvariant="normal">n</mi>
+            </mrow>
+            <mo stretchy="false">(</mo>
+            <mi>j</mi>
+            <mo stretchy="false">)</mo>
+          </mrow>
+        </munder>
+        <mspace width="negativethinmathspace"></mspace>
+        <mspace width="negativethinmathspace"></mspace>
+        <msub>
+          <mi>δ<!-- δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+            <mo>,</mo>
+            <mi>k</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \delta _{j}=2\alpha o_{j}(1-o_{j})\!\!\sum _{k\in \mathrm {Children} (j)}\!\!\delta _{k}w_{j,k}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/387c90b8c989b559dd0b15189edc7950c66546b6" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.505ex; width:32.939ex; height:6.009ex;" alt="{\displaystyle \delta _{j}=2\alpha o_{j}(1-o_{j})\!\!\sum _{k\in \mathrm {Children} (j)}\!\!\delta _{k}w_{j,k}}"/></span></p>
+<ul id="mwow"><li id="mwpA">для всех узлов</li></ul>
+<p id="mwpQ"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt55" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\Delta w_{i,j} = -\\eta \\delta _j o_{i} "}}' id="mwpg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \Delta w_{i,j}=-\eta \delta _{j}o_{i}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi mathvariant="normal">Δ<!-- Δ --></mi>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo>=</mo>
+        <mo>−<!-- − --></mo>
+        <mi>η<!-- η --></mi>
+        <msub>
+          <mi>δ<!-- δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \Delta w_{i,j}=-\eta \delta _{j}o_{i}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/c28378b9cec74a568f2032c0f29415d8ab5c6b9a" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:15.48ex; height:3.009ex;" alt="{\displaystyle \Delta w_{i,j}=-\eta \delta _{j}o_{i}}"/></span>,</p>
+
+<p id="mwpw">где <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt56" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"o_{i}"}}' id="mwqA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle o_{i}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle o_{i}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/c81b6f1251a0d2e12011a746b586c5fa9a132d48" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:1.927ex; height:2.009ex;" alt="{\displaystyle o_{i}}"/></span> это тот же <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt57" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"x_{i}"}}' id="mwqQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle x_{i}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>x</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle x_{i}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/e87000dd6142b81d041896a30fe58f0c3acb2158" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:2.129ex; height:2.009ex;" alt="{\displaystyle x_{i}}"/></span> в формуле для <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt58" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\cfrac{\\partial E}{\\partial w_{i,j}}"}}' id="mwqg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle {\cfrac {\partial E}{\partial w_{i,j}}}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <mi>E</mi>
+                </mrow>
+              </mstyle>
+            </mrow>
+            <mrow>
+              <mpadded width="0" height="8.6pt" depth="3pt">
+                <mrow></mrow>
+              </mpadded>
+              <mstyle displaystyle="false" scriptlevel="0">
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mi mathvariant="normal">∂<!-- ∂ --></mi>
+                  <msub>
+                    <mi>w</mi>
+                    <mrow class="MJX-TeXAtom-ORD">
+                      <mi>i</mi>
+                      <mo>,</mo>
+                      <mi>j</mi>
+                    </mrow>
+                  </msub>
+                </mrow>
+              </mstyle>
+            </mrow>
+          </mfrac>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle {\cfrac {\partial E}{\partial w_{i,j}}}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/c08fc2b308eb290b582928d3fec0772339a92a39" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.005ex; width:5.753ex; height:7.176ex;" alt="{\displaystyle {\cfrac {\partial E}{\partial w_{i,j}}}}"/></span>.</p>
+
+<p id="mwqw">Получающийся алгоритм представлен ниже. На вход алгоритму, кроме указанных параметров, нужно также подавать в каком-нибудь формате структуру сети. На практике очень хорошие результаты показывают сети достаточно простой структуры, состоящие из двух уровней нейронов — скрытого уровня и нейронов-выходов; каждый вход сети соединён со всеми скрытыми нейронами, а результат работы каждого скрытого нейрона подаётся на вход каждому из нейронов-выходов. В таком случае достаточно подавать на вход количество нейронов скрытого уровня.</p>
+
+</section><section data-mw-section-id="4" id="mwrA"><h2 id="Алгоритм"><span id=".D0.90.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC" typeof="mw:FallbackId"></span>Алгоритм</h2>
+<p id="mwrQ"><b id="mwrg">Алгоритм обратного распространения ошибки:</b> <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt59" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"(\\eta, \\alpha, \\{x_i^d, t^d\\}_{i=1,d=1}^{n,m}, \\textrm{steps})"}}' id="mwrw"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle (\eta ,\alpha ,\{x_{i}^{d},t^{d}\}_{i=1,d=1}^{n,m},{\textrm {steps}})}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mo stretchy="false">(</mo>
+        <mi>η<!-- η --></mi>
+        <mo>,</mo>
+        <mi>α<!-- α --></mi>
+        <mo>,</mo>
+        <mo fence="false" stretchy="false">{</mo>
+        <msubsup>
+          <mi>x</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>d</mi>
+          </mrow>
+        </msubsup>
+        <mo>,</mo>
+        <msup>
+          <mi>t</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>d</mi>
+          </mrow>
+        </msup>
+        <msubsup>
+          <mo fence="false" stretchy="false">}</mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>=</mo>
+            <mn>1</mn>
+            <mo>,</mo>
+            <mi>d</mi>
+            <mo>=</mo>
+            <mn>1</mn>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>n</mi>
+            <mo>,</mo>
+            <mi>m</mi>
+          </mrow>
+        </msubsup>
+        <mo>,</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mrow class="MJX-TeXAtom-ORD">
+            <mtext>steps</mtext>
+          </mrow>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle (\eta ,\alpha ,\{x_{i}^{d},t^{d}\}_{i=1,d=1}^{n,m},{\textrm {steps}})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/22caafff93c13d59714ba432bda92266c6d10a96" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.338ex; width:26.66ex; height:3.676ex;" alt="{\displaystyle (\eta ,\alpha ,\{x_{i}^{d},t^{d}\}_{i=1,d=1}^{n,m},{\textrm {steps}})}"/></span></p>
+<ol id="mwsA"><li id="mwsQ">Инициализировать <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt60" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\{w_{ij}\\}_{i,j} "}}' id="mwsg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \{w_{ij}\}_{i,j}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mo fence="false" stretchy="false">{</mo>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <msub>
+          <mo fence="false" stretchy="false">}</mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \{w_{ij}\}_{i,j}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/b539fdfdd726b25eb1878da837d51fd7da66606c" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:7.401ex; height:3.009ex;" alt="{\displaystyle \{w_{ij}\}_{i,j}}"/></span> маленькими случайными значениями, <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt61" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\{\\Delta w_{ij}\\}_{i,j} = 0"}}' id="mwsw"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \{\Delta w_{ij}\}_{i,j}=0}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mo fence="false" stretchy="false">{</mo>
+        <mi mathvariant="normal">Δ<!-- Δ --></mi>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <msub>
+          <mo fence="false" stretchy="false">}</mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo>=</mo>
+        <mn>0</mn>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \{\Delta w_{ij}\}_{i,j}=0}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/a8aaa6d8e706403c47b19c0c01be36cc8b92c536" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:13.598ex; height:3.009ex;" alt="{\displaystyle \{\Delta w_{ij}\}_{i,j}=0}"/></span></li>
+<li id="mwtA">Повторить NUMBER_OF_STEPS раз:
+<dl id="mwtQ"><dd id="mwtg">.Для всех d от 1 до m:</dd></dl>
+<ol id="mwtw"><li id="mwuA">Подать <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt62" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\{x_i^d\\}"}}' id="mwuQ"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \{x_{i}^{d}\}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mo fence="false" stretchy="false">{</mo>
+        <msubsup>
+          <mi>x</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>d</mi>
+          </mrow>
+        </msubsup>
+        <mo fence="false" stretchy="false">}</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \{x_{i}^{d}\}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/9f31ddcd4bdd495c206fa9b9c2d29ed03d4f1938" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:4.747ex; height:3.176ex;" alt="{\displaystyle \{x_{i}^{d}\}}"/></span> на вход сети и подсчитать выходы <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt63" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"o_i"}}' id="mwug"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle o_{i}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle o_{i}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/c81b6f1251a0d2e12011a746b586c5fa9a132d48" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:1.927ex; height:2.009ex;" alt="{\displaystyle o_{i}}"/></span> каждого узла.</li>
+<li id="mwuw">Для всех <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt64" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"k \\in Outputs"}}' id="mwvA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle k\in Outputs}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>k</mi>
+        <mo>∈<!-- ∈ --></mo>
+        <mi>O</mi>
+        <mi>u</mi>
+        <mi>t</mi>
+        <mi>p</mi>
+        <mi>u</mi>
+        <mi>t</mi>
+        <mi>s</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle k\in Outputs}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/1e474f1da810a5c5b1858824fe8e46c7dca692d8" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:12.424ex; height:2.509ex;" alt="{\displaystyle k\in Outputs}"/></span>
+<dl id="mwvQ"><dd id="mwvg"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt65" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\delta _k = -o_k(1 - o_k)(t_k - o_k)"}}' id="mwvw"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \delta _{k}=-o_{k}(1-o_{k})(t_{k}-o_{k})}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>δ<!-- δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <mo>=</mo>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">(</mo>
+        <mn>1</mn>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+        <mo stretchy="false">(</mo>
+        <msub>
+          <mi>t</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \delta _{k}=-o_{k}(1-o_{k})(t_{k}-o_{k})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/eebef742aa7f205f701ec0d09cf8bf54f96f0889" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:26.067ex; height:2.843ex;" alt="{\displaystyle \delta _{k}=-o_{k}(1-o_{k})(t_{k}-o_{k})}"/></span>.</dd></dl></li>
+<li id="mwwA">Для каждого уровня l, начиная с предпоследнего:
+<dl id="mwwQ"><dd id="mwwg">Для каждого узла j уровня l вычислить</dd>
+<dd id="mwww"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt66" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\delta _j = o_j(1 - o_j)\\sum_{k \\in Children(j)} \\delta _k w_{j,k}"}}' id="mwxA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \delta _{j}=o_{j}(1-o_{j})\sum _{k\in Children(j)}\delta _{k}w_{j,k}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>δ<!-- δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo>=</mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">(</mo>
+        <mn>1</mn>
+        <mo>−<!-- − --></mo>
+        <msub>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+        <munder>
+          <mo>∑<!-- ∑ --></mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+            <mo>∈<!-- ∈ --></mo>
+            <mi>C</mi>
+            <mi>h</mi>
+            <mi>i</mi>
+            <mi>l</mi>
+            <mi>d</mi>
+            <mi>r</mi>
+            <mi>e</mi>
+            <mi>n</mi>
+            <mo stretchy="false">(</mo>
+            <mi>j</mi>
+            <mo stretchy="false">)</mo>
+          </mrow>
+        </munder>
+        <msub>
+          <mi>δ<!-- δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>k</mi>
+          </mrow>
+        </msub>
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+            <mo>,</mo>
+            <mi>k</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \delta _{j}=o_{j}(1-o_{j})\sum _{k\in Children(j)}\delta _{k}w_{j,k}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/d64d02ec1362ee85631564dd16435bdee9a7ce61" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -3.505ex; width:32.227ex; height:6.009ex;" alt="{\displaystyle \delta _{j}=o_{j}(1-o_{j})\sum _{k\in Children(j)}\delta _{k}w_{j,k}}"/></span>.</dd></dl></li>
+<li id="mwxQ">Для каждого ребра сети {i, j}
+<dl id="mwxg"><dd id="mwxw"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt67" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\Delta w_{i,j}^{n} = \\alpha \\Delta w_{i,j}^{n-1} + ( 1 - \\alpha ) \\eta \\delta _j o_{i}^{Parent}"}}' id="mwyA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \Delta w_{i,j}^{n}=\alpha \Delta w_{i,j}^{n-1}+(1-\alpha )\eta \delta _{j}o_{i}^{Parent}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi mathvariant="normal">Δ<!-- Δ --></mi>
+        <msubsup>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>n</mi>
+          </mrow>
+        </msubsup>
+        <mo>=</mo>
+        <mi>α<!-- α --></mi>
+        <mi mathvariant="normal">Δ<!-- Δ --></mi>
+        <msubsup>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>n</mi>
+            <mo>−<!-- − --></mo>
+            <mn>1</mn>
+          </mrow>
+        </msubsup>
+        <mo>+</mo>
+        <mo stretchy="false">(</mo>
+        <mn>1</mn>
+        <mo>−<!-- − --></mo>
+        <mi>α<!-- α --></mi>
+        <mo stretchy="false">)</mo>
+        <mi>η<!-- η --></mi>
+        <msub>
+          <mi>δ<!-- δ --></mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>j</mi>
+          </mrow>
+        </msub>
+        <msubsup>
+          <mi>o</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>P</mi>
+            <mi>a</mi>
+            <mi>r</mi>
+            <mi>e</mi>
+            <mi>n</mi>
+            <mi>t</mi>
+          </mrow>
+        </msubsup>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \Delta w_{i,j}^{n}=\alpha \Delta w_{i,j}^{n-1}+(1-\alpha )\eta \delta _{j}o_{i}^{Parent}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/b83fa73f5c516007e8cdaed30be4abdbc4c2db31" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.338ex; width:36.843ex; height:3.676ex;" alt="{\displaystyle \Delta w_{i,j}^{n}=\alpha \Delta w_{i,j}^{n-1}+(1-\alpha )\eta \delta _{j}o_{i}^{Parent}}"/></span>.</dd>
+<dd id="mwyQ"><span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt68" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"w_{i,j}^{n} = w_{i,j}^{n-1} - \\Delta w_{i,j}^{n}"}}' id="mwyg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle w_{i,j}^{n}=w_{i,j}^{n-1}-\Delta w_{i,j}^{n}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msubsup>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>n</mi>
+          </mrow>
+        </msubsup>
+        <mo>=</mo>
+        <msubsup>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>n</mi>
+            <mo>−<!-- − --></mo>
+            <mn>1</mn>
+          </mrow>
+        </msubsup>
+        <mo>−<!-- − --></mo>
+        <mi mathvariant="normal">Δ<!-- Δ --></mi>
+        <msubsup>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mo>,</mo>
+            <mi>j</mi>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>n</mi>
+          </mrow>
+        </msubsup>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle w_{i,j}^{n}=w_{i,j}^{n-1}-\Delta w_{i,j}^{n}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/6bf2414846c905b7a73ef2f779c0a4d7f1ed9207" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.338ex; width:20.055ex; height:3.676ex;" alt="{\displaystyle w_{i,j}^{n}=w_{i,j}^{n-1}-\Delta w_{i,j}^{n}}"/></span>.</dd></dl></li></ol></li>
+<li id="mwyw">Выдать значения <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt69" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"w_{ij}"}}' id="mwzA"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle w_{ij}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>w</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>i</mi>
+            <mi>j</mi>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle w_{ij}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/d3302ff355269436b43bc2fbe180303881c09321" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -1.005ex; width:3.141ex; height:2.343ex;" alt="{\displaystyle w_{ij}}"/></span>.</li></ol>
+
+<p id="mwzQ">где <span class="mwe-math-element mwe-math-element-inline" typeof="mw:Extension/math" about="#mwt70" data-mw='{"name":"math","attrs":{},"body":{"extsrc":"\\alpha"}}' id="mwzg"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \alpha }">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>α<!-- α --></mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \alpha }</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/b79333175c8b3f0840bfb4ec41b8072c83ea88d3" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:1.488ex; height:1.676ex;" alt="{\displaystyle \alpha }"/></span> — коэффициент инерциальности для сглаживания резких скачков при перемещении по поверхности целевой функции</p>
+
+<figure class="mw-default-size" typeof="mw:File/Thumb" id="mwzw"><a href="./Файл:Алгоритм_обучения_нейросети.svg" class="mw-file-description" id="mw0A"><img alt="Алгоритм обучения нейросети" resource="./Файл:Алгоритм_обучения_нейросети.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/b/b7/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D1%81%D0%B5%D1%82%D0%B8.svg/250px-%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D1%81%D0%B5%D1%82%D0%B8.svg.png" decoding="async" data-file-width="512" data-file-height="724" data-file-type="drawing" height="354" width="250" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/b/b7/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D1%81%D0%B5%D1%82%D0%B8.svg/500px-%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D1%81%D0%B5%D1%82%D0%B8.svg.png 2x" class="mw-file-element" id="mw0Q"/></a><figcaption id="mw0g">Алгоритм обучения нейросети</figcaption></figure>
+<p id="mw0w"><br id="mw1A"/></p>
+<figure class="mw-default-size" typeof="mw:File/Thumb" id="mw1Q"><a href="./Файл:Алгоритм_обучения_нейросети,_ч.2,_пример.svg" class="mw-file-description" id="mw1g"><img alt="Алгоритм обучения нейросети, ч.2, пример" resource="./Файл:Алгоритм_обучения_нейросети,_ч.2,_пример.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/7/7f/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D1%81%D0%B5%D1%82%D0%B8%2C_%D1%87.2%2C_%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80.svg/250px-%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D1%81%D0%B5%D1%82%D0%B8%2C_%D1%87.2%2C_%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80.svg.png" decoding="async" data-file-width="512" data-file-height="724" data-file-type="drawing" height="354" width="250" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/7/7f/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D1%81%D0%B5%D1%82%D0%B8%2C_%D1%87.2%2C_%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80.svg/500px-%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D1%81%D0%B5%D1%82%D0%B8%2C_%D1%87.2%2C_%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80.svg.png 2x" class="mw-file-element" id="mw1w"/></a><figcaption id="mw2A">Алгоритм обучения нейросети, ч.2, пример</figcaption></figure>
+
+<section data-mw-section-id="5" id="mw2Q"><h3 id="Режимы_реализации"><span id=".D0.A0.D0.B5.D0.B6.D0.B8.D0.BC.D1.8B_.D1.80.D0.B5.D0.B0.D0.BB.D0.B8.D0.B7.D0.B0.D1.86.D0.B8.D0.B8" typeof="mw:FallbackId"></span>Режимы реализации</h3>
+<p id="mw2g">Существует два режима реализации метода обратного распространения ошибки：</p>
+<ul id="mw2w"><li id="mw3A"><a rel="mw:WikiLink" href="./Стохастический_градиентный_спуск" title="Стохастический градиентный спуск" id="mw3Q"><i id="mw3g">Стохастического</i> градиентного спуска</a></li>
+<li id="mw3w"><i id="mw4A">Пакетного</i> градиентного спуска</li></ul>
+
+<p id="mw4Q">Для пакетного градиентного спуска <a rel="mw:WikiLink" href="./Функция_потерь" title="Функция потерь" id="mw4g">функция потерь</a> вычисляется для всех образцов вместе взятых после окончания эпохи, и потом вводятся поправки весовых коэффициентов нейрона в соответствии с методом обратного распространения ошибки.</p>
+
+<p id="mw4w">Стохастический метод немедленно после вычисления выхода сети на одном образце вводит поправки в весовые коэффициенты.</p>
+
+<p id="mw5A">Пакетный метод более быстрый и стабильный, но он имеет тенденцию останавливаться и застревать в локальных минимумах. Поэтому для выхода из локальных минимумов нужно использовать особые приёмы, например, <a rel="mw:WikiLink" href="./Алгоритм_имитации_отжига" title="Алгоритм имитации отжига" id="mw5Q">алгоритм имитации отжига</a>.</p>
+
+<p id="mw5g">Стохастический метод медленнее, но от того, что он не осуществляет точного градиентного спуска, а вносит «шумы», используя недовычисленный градиент, он способен выходить из локальных минимумов и может привести к лучшему результату.</p>
+
+<p id="mw5w">В виде компромисса рекомендуют также применять мини-пакеты, когда поправка искомых весов осуществляется после обработки нескольких образцов (минипакета), то есть, реже чем при стохастическом спуске, но чаще чем при пакетном.</p>
+
+</section></section><section data-mw-section-id="6" id="mw6A"><h2 id="Математическая_интерпретация_обучения_нейронной_сети"><span id=".D0.9C.D0.B0.D1.82.D0.B5.D0.BC.D0.B0.D1.82.D0.B8.D1.87.D0.B5.D1.81.D0.BA.D0.B0.D1.8F_.D0.B8.D0.BD.D1.82.D0.B5.D1.80.D0.BF.D1.80.D0.B5.D1.82.D0.B0.D1.86.D0.B8.D1.8F_.D0.BE.D0.B1.D1.83.D1.87.D0.B5.D0.BD.D0.B8.D1.8F_.D0.BD.D0.B5.D0.B9.D1.80.D0.BE.D0.BD.D0.BD.D0.BE.D0.B9_.D1.81.D0.B5.D1.82.D0.B8" typeof="mw:FallbackId"></span>Математическая интерпретация обучения нейронной сети</h2>
+<p id="mw6Q">На каждой итерации алгоритма обратного распространения весовые коэффициенты нейронной сети модифицируются так, чтобы улучшить решение одного примера. Таким образом, в процессе обучения циклически решаются однокритериальные задачи оптимизации.</p>
+
+<p id="mw6g">Обучение нейронной сети характеризуется четырьмя специфическими ограничениями, выделяющими обучение нейросетей из общих задач оптимизации: астрономическое число параметров, необходимость высокого параллелизма при обучении, многокритериальность решаемых задач, необходимость найти достаточно широкую область, в которой значения всех минимизируемых функций близки к минимальным. В остальном проблему обучения можно, как правило, сформулировать как задачу минимизации оценки. Осторожность предыдущей фразы («как правило») связана с тем, что на самом деле нам неизвестны и никогда не будут известны все возможные задачи для нейронных сетей, и, быть может, где-то в неизвестности есть задачи, которые несводимы к минимизации оценки. Минимизация оценки — сложная проблема: параметров астрономически много (для стандартных примеров, реализуемых на <a rel="mw:WikiLink" href="./PC" title="PC" class="mw-redirect" id="mw6w">PC</a> — от 100 до 1 000 000), адаптивный рельеф (график оценки как функции от подстраиваемых параметров) сложен, может содержать много локальных минимумов.</p>
+
+</section><section data-mw-section-id="7" id="mw7A"><h2 id="Недостатки_алгоритма"><span id=".D0.9D.D0.B5.D0.B4.D0.BE.D1.81.D1.82.D0.B0.D1.82.D0.BA.D0.B8_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.B0" typeof="mw:FallbackId"></span>Недостатки алгоритма</h2>
+<p id="mw7Q">Несмотря на многочисленные успешные применения обратного распространения, оно не является универсальным решением. Больше всего неприятностей приносит неопределённо долгий процесс обучения. В сложных задачах для обучения сети могут потребоваться дни или даже недели, она может и вообще не обучиться. Причиной может быть одна из описанных ниже.</p>
+
+<section data-mw-section-id="8" id="mw7g"><h3 id="Паралич_сети"><span id=".D0.9F.D0.B0.D1.80.D0.B0.D0.BB.D0.B8.D1.87_.D1.81.D0.B5.D1.82.D0.B8" typeof="mw:FallbackId"></span>Паралич сети</h3>
+<p id="mw7w">В процессе обучения сети значения весов могут в результате коррекции стать очень большими величинами. Это может привести к тому, что все или большинство нейронов будут функционировать при очень больших значениях OUT, в области, где производная сжимающей функции очень мала. Так как посылаемая обратно в процессе обучения ошибка пропорциональна этой производной, то процесс обучения может практически замереть. В теоретическом отношении эта проблема плохо изучена. Обычно этого избегают уменьшением размера шага η, но это увеличивает время обучения. Различные эвристики использовались для предохранения от паралича или для восстановления после него, но пока что они могут рассматриваться лишь как экспериментальные.</p>
+
+</section><section data-mw-section-id="9" id="mw8A"><h3 id="Локальные_минимумы"><span id=".D0.9B.D0.BE.D0.BA.D0.B0.D0.BB.D1.8C.D0.BD.D1.8B.D0.B5_.D0.BC.D0.B8.D0.BD.D0.B8.D0.BC.D1.83.D0.BC.D1.8B" typeof="mw:FallbackId"></span>Локальные минимумы</h3>
+<figure typeof="mw:File/Thumb" id="mw8Q"><a href="./Файл:Extrema_example.svg" class="mw-file-description" id="mw8g"><img resource="./Файл:Extrema_example.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Extrema_example.svg/250px-Extrema_example.svg.png" decoding="async" data-file-width="600" data-file-height="480" data-file-type="drawing" height="200" width="250" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Extrema_example.svg/500px-Extrema_example.svg.png 2x" class="mw-file-element" id="mw8w"/></a><figcaption id="mw9A">Метод градиентного спуска может застрять в локальном минимуме, так и не попав в глобальный минимум</figcaption></figure>
+
+<p id="mw9Q">Обратное распространение использует разновидность градиентного спуска, то есть осуществляет спуск вниз по поверхности ошибки, непрерывно подстраивая веса в направлении к минимуму. Поверхность ошибки сложной сети сильно изрезана и состоит из холмов, долин, складок и оврагов в пространстве высокой размерности. Сеть может попасть в <a rel="mw:WikiLink" href="./Локальный_минимум" title="Локальный минимум" class="mw-redirect" id="mw9g">локальный минимум</a> (неглубокую долину), когда рядом имеется гораздо более глубокий минимум. В точке локального минимума все направления ведут вверх, и сеть не способна из него выбраться. Основную трудность при обучении нейронных сетей составляют как раз методы выхода из локальных минимумов: каждый раз выходя из локального минимума снова ищется следующий локальный минимум тем же методом обратного распространения ошибки до тех пор, пока найти из него выход уже не удаётся.</p>
+
+<p id="mw9w">Проблемы отсутствия выпуклости в функции ошибок и как следствие трудности с локальными минимумами и плоскими участками считались недостатком метода, однако <a rel="mw:WikiLink" href="./Лекун,_Ян" title="Лекун, Ян" id="mw-A">Ян Лекун</a> в обзорной статье 2015 года утверждает, что с практической точки зрения эти явления не так опасны<sup about="#mwt72" class="mw-ref reference" id="cite_ref-8" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-8"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-8" id="mw-Q"><span class="mw-reflink-text" id="mw-g"><span class="cite-bracket" id="mw-w">[</span>8<span class="cite-bracket" id="mw_A">]</span></span></a></sup>.</p>
+
+</section><section data-mw-section-id="10" id="mw_Q"><h3 id="Размер_шага"><span id=".D0.A0.D0.B0.D0.B7.D0.BC.D0.B5.D1.80_.D1.88.D0.B0.D0.B3.D0.B0" typeof="mw:FallbackId"></span>Размер шага</h3>
+<p id="mw_g">Если размер шага фиксирован и очень мал, то сходимость слишком медленная, если же он фиксирован и слишком велик, то может возникнуть паралич или постоянная неустойчивость. Эффективно увеличивать шаг до тех пор, пока не прекратится улучшение оценки в данном направлении антиградиента и уменьшать, если такого улучшения не происходит. П. Д. Вассерман<sup about="#mwt75" class="mw-ref reference" id="cite_ref-9" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-9"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-9" id="mw_w"><span class="mw-reflink-text" id="mwAQA"><span class="cite-bracket" id="mwAQE">[</span>9<span class="cite-bracket" id="mwAQI">]</span></span></a></sup> описал адаптивный алгоритм выбора шага, автоматически корректирующий размер шага в процессе обучения. В книге <a rel="mw:WikiLink" href="./Горбань,_Александр_Николаевич_(физик,_1952)" title="Горбань, Александр Николаевич (физик, 1952)" id="mwAQM">А. Н. Горбаня</a><sup about="#mwt78" class="mw-ref reference" id="cite_ref-Gorban1990_10-0" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{"name":"Gorban1990"},"body":{"id":"mw-reference-text-cite_note-Gorban1990-10"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-Gorban1990-10" id="mwAQQ"><span class="mw-reflink-text" id="mwAQU"><span class="cite-bracket" id="mwAQY">[</span>10<span class="cite-bracket" id="mwAQc">]</span></span></a></sup> предложена разветвлённая технология оптимизации обучения.</p>
+
+<p id="mwAQg">Согласно ей<sup about="#mwt79" class="mw-ref reference" id="cite_ref-Gorban1990_10-1" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{"name":"Gorban1990"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-Gorban1990-10" id="mwAQk"><span class="mw-reflink-text" id="mwAQo"><span class="cite-bracket" id="mwAQs">[</span>10<span class="cite-bracket" id="mwAQw">]</span></span></a></sup>, метод обратного распространения ошибки является способом быстрого вычисления градиента, который далее используется в различных алгоритмах гладкой оптимизации, а наиболее перспективным является использование квазиньютоновских методов (BFGS) для вычисления направления спуска в сочетании с одномерной оптимизацией в этом направлении. Оценка для таких методов вычисляется либо по всему задачнику либо по его подмножествам («страницам» задачника,<sup about="#mwt80" class="mw-ref reference" id="cite_ref-Gorban1990_10-2" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{"name":"Gorban1990"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-Gorban1990-10" id="mwAQ0"><span class="mw-reflink-text" id="mwAQ4"><span class="cite-bracket" id="mwAQ8">[</span>10<span class="cite-bracket" id="mwARA">]</span></span></a></sup> которые впоследствии получили название «минипакеты»). В настоящее время такая точка зрения стала общепринятой<sup about="#mwt82" class="mw-ref reference" id="cite_ref-11" rel="dc:references" typeof="mw:Extension/ref" data-mw='{"name":"ref","attrs":{},"body":{"id":"mw-reference-text-cite_note-11"}}'><a href="./Метод_обратного_распространения_ошибки#cite_note-11" id="mwARE"><span class="mw-reflink-text" id="mwARI"><span class="cite-bracket" id="mwARM">[</span>11<span class="cite-bracket" id="mwARQ">]</span></span></a></sup>.</p>
+
+<p id="mwARU">Следует также отметить возможность переобучения сети, что является скорее результатом ошибочного проектирования её топологии и/или неправильным выбором критерия остановки обучения. При переобучении теряется свойство сети обобщать информацию. Весь набор образов, предоставленных к обучению, будет выучен сетью, но любые другие образы, даже очень похожие, могут быть распознаны неверно.</p>
+
+</section></section><section data-mw-section-id="11" id="mwARY"><h2 id="Литература"><span id=".D0.9B.D0.B8.D1.82.D0.B5.D1.80.D0.B0.D1.82.D1.83.D1.80.D0.B0" typeof="mw:FallbackId"></span>Литература</h2>
+<ul id="mwARc"><li id="mwARg"><style data-mw-deduplicate="TemplateStyles:r150646110" typeof="mw:Extension/templatestyles mw:Transclusion" about="#mwt83" data-mw='{"name":"templatestyles","attrs":{"src":"Module:Citation/CS1/styles.css"},"parts":[{"template":{"target":{"wt":"книга\n","href":"./Шаблон:Книга"},"params":{"заглавие":{"wt":"Нейрокомпьютерная техника: Теория и практика"},"автор":{"wt":"Уоссермен Ф."},"ссылка":{"wt":"http://evrika.tsi.lv/index.php?name=texts&amp;file=show&amp;f=410"},"год":{"wt":"1992"},"место":{"wt":"М."},"издательство":{"wt":"«Мир»"},"archive-url":{"wt":"https://web.archive.org/web/20090630215858/http://evrika.tsi.lv/index.php?name=texts&amp;file=show&amp;f=410"},"archive-date":{"wt":"2009-06-30"}},"i":0}}]}' id="mwARk">.mw-parser-output cite.citation{font-style:inherit;word-wrap:break-word}.mw-parser-output .citation q{quotes:"«""»""„""“"}.mw-parser-output .citation:target{background-color:rgba(0,127,255,0.133)}.mw-parser-output .id-lock-free a::after,.mw-parser-output .id-lock-limited a::after,.mw-parser-output .id-lock-registration a::after,.mw-parser-output .id-lock-subscription a::after,.mw-parser-output .cs1-ws-icon a::after{content:"";width:1.1em;height:1.1em;display:inline-block;vertical-align:middle;background-position:center;background-repeat:no-repeat;background-size:contain}.mw-parser-output .id-lock-free.id-lock-free a::after{background-image:url("//upload.wikimedia.org/wikipedia/commons/6/65/Lock-green.svg")}.mw-parser-output .id-lock-limited.id-lock-limited a::after,.mw-parser-output .id-lock-registration.id-lock-registration a::after{background-image:url("//upload.wikimedia.org/wikipedia/commons/d/d6/Lock-gray-alt-2.svg")}.mw-parser-output .id-lock-subscription.id-lock-subscription a::after{background-image:url("//upload.wikimedia.org/wikipedia/commons/a/aa/Lock-red-alt-2.svg")}.mw-parser-output .cs1-ws-icon a::after{background-image:url("//upload.wikimedia.org/wikipedia/commons/4/4c/Wikisource-logo.svg")}.mw-parser-output .cs1-code{color:inherit;background:inherit;border:none;padding:inherit}.mw-parser-output .cs1-hidden-error{display:none;color:var(--color-error,#d33)}.mw-parser-output .cs1-visible-error{color:var(--color-error,#d33)}.mw-parser-output .cs1-maint{display:none;color:#085;margin-left:0.3em}.mw-parser-output .cs1-kern-left{padding-left:0.2em}.mw-parser-output .cs1-kern-right{padding-right:0.2em}.mw-parser-output .citation .mw-selflink{font-weight:inherit}@media screen{.mw-parser-output .cs1-format{font-size:95%}html.skin-theme-clientpref-night .mw-parser-output .cs1-maint{color:#18911f}html.skin-theme-clientpref-night .mw-parser-output .id-lock-free a::after,html.skin-theme-clientpref-night .mw-parser-output .id-lock-limited a::after,html.skin-theme-clientpref-night .mw-parser-output .id-lock-registration a::after,html.skin-theme-clientpref-night .mw-parser-output .id-lock-subscription a::after{filter:invert(1)hue-rotate(180deg)}}@media screen and (prefers-color-scheme:dark){html.skin-theme-clientpref-os .mw-parser-output .cs1-maint{color:#18911f}html.skin-theme-clientpref-os .mw-parser-output .id-lock-free a::after,html.skin-theme-clientpref-os .mw-parser-output .id-lock-limited a::after,html.skin-theme-clientpref-os .mw-parser-output .id-lock-registration a::after,html.skin-theme-clientpref-os .mw-parser-output .id-lock-subscription a::after{filter:invert(1)hue-rotate(180deg)}}</style><span class="citation no-wikidata" data-wikidata-property-id="P1343" about="#mwt83" id="mwARo"><i>Уоссермен Ф.</i><span typeof="mw:Entity"> </span><a rel="mw:ExtLink nofollow" href="http://evrika.tsi.lv/index.php?name=texts&amp;file=show&amp;f=410" class="external text">Нейрокомпьютерная техника: Теория и практика</a>.<span typeof="mw:Entity"> </span>— <abbr title="Москва">М.</abbr>: «Мир», 1992.<span typeof="mw:Entity"> </span>— [<a rel="mw:ExtLink nofollow" href="https://web.archive.org/web/20090630215858/http://evrika.tsi.lv/index.php?name=texts&amp;file=show&amp;f=410" class="external text">Архивировано</a> 30<span typeof="mw:Entity"> </span>июня 2009<span typeof="mw:Entity"> </span>года.]</span></li>
+<li id="mwARs"><i id="mwARw">Хайкин С.</i> Нейронные сети: Полный курс. Пер. с англ. Н. Н. Куссуль, А. Ю. Шелестова. 2-е изд., испр. — М.: Издательский дом Вильямс, 2008, 1103 с.</li></ul>
+
+</section><section data-mw-section-id="12" id="mwAR0"><h2 id="Ссылки"><span id=".D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8" typeof="mw:FallbackId"></span>Ссылки</h2>
+<ul id="mwAR4"><li id="mwAR8"><i id="mwASA">Горбань А. Н., Россиев Д. А.,</i> <a rel="mw:ExtLink nofollow" href="https://www.researchgate.net/publication/334971618_Neural_Networks_on_Personal_Computer" class="external text" id="mwASE">Нейронные сети на персональном компьютере</a>. — Новосибирск: Наука, 1996. — 276 с.</li>
+<li id="mwASI"><link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r150646110" about="#mwt85" typeof="mw:Extension/templatestyles mw:Transclusion" data-mw='{"name":"templatestyles","attrs":{"src":"Module:Citation/CS1/styles.css"},"parts":[{"template":{"target":{"wt":"книга\n ","href":"./Шаблон:Книга"},"params":{"заглавие":{"wt":"Отчет по научно-исследовательской работе \"Создание аналитического обзора информационных источников по применению нейронных сетей для задач газовой технологии\""},"автор":{"wt":"Копосов А. И., Щербаков И. Б., Кисленко Н. А., Кисленко О. П., Варивода Ю. В. и др."},"ссылка":{"wt":"http://cache.rcom.ru/~dap/nneng/nnlinks/nbdoc/common.htm"},"год":{"wt":"1995"},"место":{"wt":"М."},"издательство":{"wt":"ВНИИГАЗ"},"archive-url":{"wt":"https://web.archive.org/web/20070108161822/http://cache.rcom.ru/~dap/nneng/nnlinks/nbdoc/common.htm"},"archive-date":{"wt":"2007-01-08"}},"i":0}}]}' id="mwASM"/><span class="citation no-wikidata" data-wikidata-property-id="P1343" about="#mwt85" id="mwASQ"><i>Копосов А. И., Щербаков И. Б., Кисленко Н. А., Кисленко О. П., Варивода Ю. В. и др.</i><span typeof="mw:Entity"> </span><a rel="mw:ExtLink nofollow" href="http://cache.rcom.ru/~dap/nneng/nnlinks/nbdoc/common.htm" class="external text">Отчет по научно-исследовательской работе "Создание аналитического обзора информационных источников по применению нейронных сетей для задач газовой технологии"</a>.<span typeof="mw:Entity"> </span>— <abbr title="Москва">М.</abbr>: ВНИИГАЗ, 1995.<span typeof="mw:Entity"> </span>— [<a rel="mw:ExtLink nofollow" href="https://web.archive.org/web/20070108161822/http://cache.rcom.ru/~dap/nneng/nnlinks/nbdoc/common.htm" class="external text">Архивировано</a> 8<span typeof="mw:Entity"> </span>января 2007<span typeof="mw:Entity"> </span>года.]</span></li>
+<li id="mwASU"><a rel="mw:ExtLink nofollow" href="https://web.archive.org/web/20081204064930/http://neuroschool.narod.ru/books.html" class="external text" id="mwASY">Книги по нейроинформатике на сайте NeuroSchool.</a></li>
+<li id="mwASc"><i id="mwASg">Терехов С. А.</i>, <a rel="mw:ExtLink nofollow" href="http://alife.narod.ru/lectures/neural/Neu_ch01.htm" class="external text" id="mwASk">Лекции по теории и приложениям искусственных нейронных сетей.</a> <a rel="mw:ExtLink nofollow" href="https://web.archive.org/web/20100126144909/http://alife.narod.ru/lectures/neural/Neu_ch01.htm" about="#mwt87" typeof="mw:Transclusion" class="external text" data-mw='{"parts":[{"template":{"target":{"wt":"Wayback","href":"./Шаблон:Wayback"},"params":{"url":{"wt":"http://alife.narod.ru/lectures/neural/Neu_ch01.htm"},"date":{"wt":"20100126144909"}},"i":0}}]}' id="mwASo">Архивная копия</a><span about="#mwt87"> от 26 января 2010 на </span><a rel="mw:WikiLink" href="./Wayback_Machine" title="Wayback Machine" about="#mwt87" id="mwASs">Wayback Machine</a></li>
+<li id="mwASw"><i id="mwAS0"><a rel="mw:WikiLink" href="./Миркес,_Евгений_Моисеевич" title="Миркес, Евгений Моисеевич" id="mwAS4">Миркес Е. М.</a></i>, <a rel="mw:ExtLink nofollow" href="https://web.archive.org/web/20080611081115/http://www.softcraft.ru/neuro/ni/p00.shtml" class="external text" id="mwAS8">Нейроинформатика: Учеб. пособие для студентов с программами для выполнения лабораторных работ.</a> Красноярск: ИПЦ КГТУ, 2002, 347 с. Рис. 58, табл. 59, библиогр. 379 наименований. <a href="./Special:BookSources/5763604776" rel="mw:WikiLink" class="internal mw-magiclink mw-magiclink-isbn" id="mwATA">ISBN 5-7636-0477-6</a></li></ul>
+
+</section><section data-mw-section-id="13" id="mwATE"><h2 id="Примечания"><span id=".D0.9F.D1.80.D0.B8.D0.BC.D0.B5.D1.87.D0.B0.D0.BD.D0.B8.D1.8F" typeof="mw:FallbackId"></span>Примечания</h2>
+<div class="reflist columns" style=" list-style-type: decimal;" about="#mwt88" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"примечания","href":"./Шаблон:Примечания"},"params":{},"i":0}}]}' id="mwATI">
+<div class="mw-references-wrap mw-references-columns" typeof="mw:Extension/references" about="#mwt89" data-mw='{"name":"references","attrs":{"group":"","responsive":"1"},"body":{"extsrc":""}}' id="mwATM"><ol class="mw-references references" id="mwATQ"><li about="#cite_note-1" id="cite_note-1" data-mw-footnote-number="1"><span class="mw-cite-backlink" id="mwATU"><a href="./Метод_обратного_распространения_ошибки#cite_ref-1" rel="mw:referencedBy" id="mwATY"><span class="mw-linkback-text" id="mwATc">↑</span></a></span> <span id="mw-reference-text-cite_note-1" class="mw-reference-text reference-text"><i id="mwATg"><a rel="mw:WikiLink" href="./Галушкин,_Александр_Иванович_(учёный)" title="Галушкин, Александр Иванович (учёный)" id="mwATk">Галушкин А. И.</a></i> Синтез многослойных систем распознавания образов. — М.: «Энергия», 1974.</span></li>
+<li about="#cite_note-2" id="cite_note-2" data-mw-footnote-number="2"><span class="mw-cite-backlink" id="mwATo"><a href="./Метод_обратного_распространения_ошибки#cite_ref-2" rel="mw:referencedBy" id="mwATs"><span class="mw-linkback-text" id="mwATw">↑</span></a></span> <span id="mw-reference-text-cite_note-2" class="mw-reference-text reference-text"><span class="citation" about="#mwt3" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"Статья ","href":"./Шаблон:Статья"},"params":{"ссылка":{"wt":"https://www.ijainn.latticescipub.com/wp-content/uploads/papers/v3i1/A1061123122.pdf"},"автор":{"wt":"Igor V. Netay"},"заглавие":{"wt":"Influence of Digital Fluctuations on Behavior of Neural Networks"},"год":{"wt":"2022"},"язык":{"wt":"en"},"издание":{"wt":"Indian Journal of Artificial Intelligence and Neural Networking"},"месяц":{"wt":"12"},"том":{"wt":"3"},"issn":{"wt":"2582-7626"}},"i":0}}]}' id="mwAT0"><i id="mwAT4">Igor V. Netay.</i><span typeof="mw:Entity" id="mwAT8"> </span><a rel="mw:ExtLink nofollow" href="https://www.ijainn.latticescipub.com/wp-content/uploads/papers/v3i1/A1061123122.pdf" class="external text" id="mwAUA">Influence of Digital Fluctuations on Behavior of Neural Networks</a><span typeof="mw:Entity" id="mwAUE"> </span><span class="ref-info" title="на английском языке" style="cursor:help;" id="mwAUI">(англ.)</span><span typeof="mw:Entity" id="mwAUM"> </span>// Indian Journal of Artificial Intelligence and Neural Networking.<span typeof="mw:Entity" id="mwAUQ"> </span>— 2022.<span typeof="mw:Entity" id="mwAUU"> </span>— December<span typeof="mw:Entity" id="mwAUY"> </span>(<span class="nowrap" id="mwAUc">vol. 3</span>).<span typeof="mw:Entity" id="mwAUg"> </span>— <a rel="mw:WikiLink" href="./Международный_стандартный_серийный_номер" title="Международный стандартный серийный номер" class="mw-redirect" id="mwAUk">ISSN</a> <a rel="mw:ExtLink nofollow" href="//www.worldcat.org/search?fq=x0:jrnl&amp;q=n2:2582-7626" class="external text" id="mwAUo">2582-7626</a>.</span></span></li>
+<li about="#cite_note-3" id="cite_note-3" data-mw-footnote-number="3"><span class="mw-cite-backlink" id="mwAUs"><a href="./Метод_обратного_распространения_ошибки#cite_ref-3" rel="mw:referencedBy" id="mwAUw"><span class="mw-linkback-text" id="mwAU0">↑</span></a></span> <span id="mw-reference-text-cite_note-3" class="mw-reference-text reference-text"><i id="mwAU4">Werbos P. J.</i>, Beyond regression: New tools for prediction and analysis in the behavioral sciences. Ph.D. thesis, Harvard University, Cambridge, MA, 1974.</span></li>
+<li about="#cite_note-Rumelhart-4" id="cite_note-Rumelhart-4" data-mw-footnote-number="4"><span class="mw-cite-backlink" id="mwAU8"><a href="./Метод_обратного_распространения_ошибки#cite_ref-Rumelhart_4-0" rel="mw:referencedBy" id="mwAVA"><span class="mw-linkback-text" id="mwAVE">↑</span></a></span> <span id="mw-reference-text-cite_note-Rumelhart-4" class="mw-reference-text reference-text"><i id="mwAVI">Rumelhart D.E., Hinton G.E., Williams R.J.</i>, Learning Internal Representations by Error Propagation. In: Parallel Distributed Processing, vol. 1, pp. 318—362. Cambridge, MA, MIT Press. 1986.</span></li>
+<li about="#cite_note-5" id="cite_note-5" data-mw-footnote-number="5"><span class="mw-cite-backlink" id="mwAVM"><a href="./Метод_обратного_распространения_ошибки#cite_ref-5" rel="mw:referencedBy" id="mwAVQ"><span class="mw-linkback-text" id="mwAVU">↑</span></a></span> <span id="mw-reference-text-cite_note-5" class="mw-reference-text reference-text"><i id="mwAVY">Барцев С. И., Охонин В. А.</i> Адаптивные сети обработки информации. Красноярск<span typeof="mw:DisplaySpace" id="mwAVc"> </span>: Ин-т физики СО АН СССР, 1986. Препринт N 59Б. — 20 с.</span></li>
+<li about="#cite_note-6" id="cite_note-6" data-mw-footnote-number="6"><span class="mw-cite-backlink" id="mwAVg"><a href="./Метод_обратного_распространения_ошибки#cite_ref-6" rel="mw:referencedBy" id="mwAVk"><span class="mw-linkback-text" id="mwAVo">↑</span></a></span> <span id="mw-reference-text-cite_note-6" class="mw-reference-text reference-text"><i id="mwAVs">Барцев С. И., Гилев С. Е., Охонин В. А.</i>, Принцип двойственности в организации адаптивных сетей обработки информации, В кн.: Динамика химических и биологических систем. — Новосибирск: Наука, 1989. — С. 6-55.</span></li>
+<li about="#cite_note-7" id="cite_note-7" data-mw-footnote-number="7"><span class="mw-cite-backlink" id="mwAVw"><a href="./Метод_обратного_распространения_ошибки#cite_ref-7" rel="mw:referencedBy" id="mwAV0"><span class="mw-linkback-text" id="mwAV4">↑</span></a></span> <span id="mw-reference-text-cite_note-7" class="mw-reference-text reference-text"><i id="mwAV8"><a rel="mw:WikiLink" href="./Миркес,_Евгений_Моисеевич" title="Миркес, Евгений Моисеевич" id="mwAWA">Миркес Е. М.</a></i>, <a rel="mw:ExtLink nofollow" href="http://pca.narod.ru/MirkesNeurocomputer.htm" class="external text" id="mwAWE">Нейрокомпьютер. Проект стандарта</a> <a rel="mw:ExtLink nofollow" href="https://web.archive.org/web/20090615155650/http://pca.narod.ru/MirkesNeurocomputer.htm" about="#mwt17" typeof="mw:Transclusion" class="external text" data-mw='{"parts":[{"template":{"target":{"wt":"Wayback","href":"./Шаблон:Wayback"},"params":{"url":{"wt":"http://pca.narod.ru/MirkesNeurocomputer.htm"},"date":{"wt":"20090615155650"}},"i":0}}]}' id="mwAWI">Архивная копия</a><span about="#mwt17" id="mwAWM"> от 15 июня 2009 на </span><a rel="mw:WikiLink" href="./Wayback_Machine" title="Wayback Machine" about="#mwt17" id="mwAWQ">Wayback Machine</a>. — Новосибирск: Наука, Сибирская издательская фирма РАН, 1999. — 337 с. <a href="./Special:BookSources/5020314099" rel="mw:WikiLink" class="internal mw-magiclink mw-magiclink-isbn" id="mwAWU">ISBN 5-02-031409-9</a> Другие копии онлайн: <span class="citation" about="#mwt18" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"cite web","href":"./Шаблон:Cite_web"},"params":{"url":{"wt":"http://neuroschool.narod.ru/books/mirkes/mirkes.html"},"title":{"wt":"アーカイブされたコピー"},"archive-url":{"wt":"https://web.archive.org/web/20090703165215/http://neuroschool.narod.ru/books/mirkes/mirkes.html"},"archive-date":{"wt":"2009-07-03"},"access-date":{"wt":"2008-10-15"}},"i":0}}]}' id="mwAWY"><span lang="und" id="mwAWc"><a rel="mw:ExtLink nofollow" href="http://neuroschool.narod.ru/books/mirkes/mirkes.html" class="external text" id="mwAWg">アーカイブされたコピー</a></span><span class="hidden-ref" style="display:none;" id="mwAWk"><span typeof="mw:Entity" id="mwAWo"> </span></span>.<span typeof="mw:Entity" id="mwAWs"> </span>Дата обращения: 15 октября 2008.<span typeof="mw:Entity" id="mwAWw"> </span><a rel="mw:ExtLink nofollow" href="https://web.archive.org/web/20090703165215/http://neuroschool.narod.ru/books/mirkes/mirkes.html" class="external text" id="mwAW0">Архивировано</a> 3 июля 2009 года.</span><link rel="mw:PageProp/Category" href="./Категория:Википедия:Cite_web_(не_указан_язык)" about="#mwt18" id="mwAW4"/>.</span></li>
+<li about="#cite_note-8" id="cite_note-8" data-mw-footnote-number="8"><span class="mw-cite-backlink" id="mwAW8"><a href="./Метод_обратного_распространения_ошибки#cite_ref-8" rel="mw:referencedBy" id="mwAXA"><span class="mw-linkback-text" id="mwAXE">↑</span></a></span> <span id="mw-reference-text-cite_note-8" class="mw-reference-text reference-text"><span class="citation" about="#mwt71" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"статья ","href":"./Шаблон:Статья"},"params":{"заглавие":{"wt":"Deep learning"},"издание":{"wt":"Nature"},"том":{"wt":"521"},"страницы":{"wt":"436—444"},"doi":{"wt":"10.1038/nature14539"},"язык":{"wt":"en"},"автор":{"wt":"LeCun, Yann; Bengio, Yoshua; Hinton, Geoffrey"},"год":{"wt":"2015"}},"i":0}}]}' id="mwAXI"><i id="mwAXM">LeCun, Yann; Bengio, Yoshua; Hinton, Geoffrey.</i><span typeof="mw:Entity" id="mwAXQ"> </span>Deep learning<span typeof="mw:Entity" id="mwAXU"> </span><span class="ref-info" title="на английском языке" style="cursor:help;" id="mwAXY">(англ.)</span><span typeof="mw:Entity" id="mwAXc"> </span>// Nature.<span typeof="mw:Entity" id="mwAXg"> </span>— 2015.<span typeof="mw:Entity" id="mwAXk"> </span>— <span class="nowrap" id="mwAXo">Vol. 521</span>.<span typeof="mw:Entity" id="mwAXs"> </span>— <span class="nowrap" id="mwAXw">P. 436—444</span>.<span typeof="mw:Entity" id="mwAX0"> </span>— <a rel="mw:WikiLink" href="./Doi" title="Doi" class="mw-redirect" id="mwAX4">doi</a>:<a rel="mw:ExtLink nofollow" href="https://dx.doi.org/10.1038%2Fnature14539" class="external text" data-mw-original-href="//dx.doi.org/10.1038%2Fnature14539" id="mwAX8">10.1038/nature14539</a>.</span></span></li>
+<li about="#cite_note-9" id="cite_note-9" data-mw-footnote-number="9"><span class="mw-cite-backlink" id="mwAYA"><a href="./Метод_обратного_распространения_ошибки#cite_ref-9" rel="mw:referencedBy" id="mwAYE"><span class="mw-linkback-text" id="mwAYI">↑</span></a></span> <span id="mw-reference-text-cite_note-9" class="mw-reference-text reference-text"><link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r150646110" about="#mwt73" typeof="mw:Extension/templatestyles mw:Transclusion" data-mw='{"name":"templatestyles","attrs":{"src":"Module:Citation/CS1/styles.css"},"parts":[{"template":{"target":{"wt":"книга\n","href":"./Шаблон:Книга"},"params":{"заглавие":{"wt":"Experiments in translating Chinese characters using backpropagation. Proceedings of the Thirty-Third IEEE Computer Society International Conference"},"автор":{"wt":"Wasserman P. D."},"ссылка":{"wt":""},"год":{"wt":"1988"},"место":{"wt":"Washington"},"издательство":{"wt":"D. C.: Computer Society Press of the IEEE"}},"i":0}}]}' id="mwAYM"/><span class="citation no-wikidata" data-wikidata-property-id="P1343" about="#mwt73" id="mwAYQ"><i id="mwAYU">Wasserman P. D.</i><span typeof="mw:Entity" id="mwAYY"> </span>Experiments in translating Chinese characters using backpropagation. Proceedings of the Thirty-Third IEEE Computer Society International Conference.<span typeof="mw:Entity" id="mwAYc"> </span>— Washington: D. C.: Computer Society Press of the IEEE, 1988.</span></span></li>
+<li about="#cite_note-Gorban1990-10" id="cite_note-Gorban1990-10" data-mw-footnote-number="10"><span rel="mw:referencedBy" class="mw-cite-backlink" id="mwAYg"><a href="./Метод_обратного_распространения_ошибки#cite_ref-Gorban1990_10-0" id="mwAYk"><span class="mw-linkback-text" id="mwAYo">1</span></a> <a href="./Метод_обратного_распространения_ошибки#cite_ref-Gorban1990_10-1" id="mwAYs"><span class="mw-linkback-text" id="mwAYw">2</span></a> <a href="./Метод_обратного_распространения_ошибки#cite_ref-Gorban1990_10-2" id="mwAY0"><span class="mw-linkback-text" id="mwAY4">3</span></a></span> <span id="mw-reference-text-cite_note-Gorban1990-10" class="mw-reference-text reference-text"><link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r150646110" about="#mwt76" typeof="mw:Extension/templatestyles mw:Transclusion" data-mw='{"name":"templatestyles","attrs":{"src":"Module:Citation/CS1/styles.css"},"parts":[{"template":{"target":{"wt":"книга\n","href":"./Шаблон:Книга"},"params":{"заглавие":{"wt":"Обучение нейронных сетей"},"автор":{"wt":"Горбань А. Н."},"ссылка":{"wt":"http://lib.sibnet.ru/book/11961"},"год":{"wt":"1990"},"место":{"wt":"М."},"издательство":{"wt":"USSR-USA СП ПараГраф"},"access-date":{"wt":"2009-12-11"},"archive-date":{"wt":"2010-08-09"},"archive-url":{"wt":"https://web.archive.org/web/20100809011557/http://lib.sibnet.ru/book/11961"},"url-status":{"wt":"live"}},"i":0}}]}' id="mwAY8"/><span class="citation no-wikidata" data-wikidata-property-id="P1343" about="#mwt76" id="mwAZA"><i id="mwAZE">Горбань А. Н.</i><span typeof="mw:Entity" id="mwAZI"> </span><a rel="mw:ExtLink nofollow" href="http://lib.sibnet.ru/book/11961" class="external text" id="mwAZM">Обучение нейронных сетей</a>.<span typeof="mw:Entity" id="mwAZQ"> </span>— <abbr title="Москва" id="mwAZU">М.</abbr>: USSR-USA СП ПараГраф, 1990.<span typeof="mw:Entity" id="mwAZY"> </span>— [<a rel="mw:ExtLink nofollow" href="https://web.archive.org/web/20100809011557/http://lib.sibnet.ru/book/11961" class="external text" id="mwAZc">Архивировано</a> 9<span typeof="mw:Entity" id="mwAZg"> </span>августа 2010<span typeof="mw:Entity" id="mwAZk"> </span>года.]</span></span></li>
+<li about="#cite_note-11" id="cite_note-11" data-mw-footnote-number="11"><span class="mw-cite-backlink" id="mwAZo"><a href="./Метод_обратного_распространения_ошибки#cite_ref-11" rel="mw:referencedBy" id="mwAZs"><span class="mw-linkback-text" id="mwAZw">↑</span></a></span> <span id="mw-reference-text-cite_note-11" class="mw-reference-text reference-text">Goodfellow I, Bengio Y, Courville A. <a rel="mw:ExtLink nofollow" href="http://faculty.neu.edu.cn/yury/AAI/Textbook/DeepLearningBook.pdf" class="external text" id="mwAZ0">Deep learning</a> <a rel="mw:ExtLink nofollow" href="https://web.archive.org/web/20190818131144/http://faculty.neu.edu.cn/yury/AAI/Textbook/DeepLearningBook.pdf" about="#mwt81" typeof="mw:Transclusion" class="external text" data-mw='{"parts":[{"template":{"target":{"wt":"Wayback","href":"./Шаблон:Wayback"},"params":{"url":{"wt":"http://faculty.neu.edu.cn/yury/AAI/Textbook/DeepLearningBook.pdf"},"date":{"wt":"20190818131144"}},"i":0}}]}' id="mwAZ4">Архивная копия</a><span about="#mwt81" id="mwAZ8"> от 18 августа 2019 на </span><a rel="mw:WikiLink" href="./Wayback_Machine" title="Wayback Machine" about="#mwt81" id="mwAaA">Wayback Machine</a>. MIT press; 2016 Nov 10.</span></li>
+</ol></div></div>
+<div class="mbox-Стиль_статьи plainlinks metadata ambox ambox-style" about="#mwt90" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"стиль статьи","href":"./Шаблон:Стиль_статьи"},"params":{"дата":{"wt":"2024-10-15"}},"i":0}}]}' id="mwAaE"><style data-mw-deduplicate="TemplateStyles:r152947976" typeof="mw:Extension/templatestyles" about="#mwt91" data-mw='{"name":"templatestyles","attrs":{"src":"Module:Message box/ambox.css"},"body":{"extsrc":""}}'>.mw-parser-output .ambox{align-items:center;border:1px solid var(--border-color-base,#a2a9b1);border-left:10px solid #36c;background:var(--background-color-neutral-subtle,#f8f9fa);box-sizing:border-box;display:flex;margin:0 10%}html body.mediawiki.skin-minerva .mw-parser-output .ambox{border-width:0 0 0 4px}.mw-parser-output .ambox+link+.ambox,.mw-parser-output .ambox+link+style+.ambox,.mw-parser-output .ambox+link+link+.ambox,.mw-parser-output .ambox+.mw-empty-elt+link+.ambox,.mw-parser-output .ambox+.mw-empty-elt+link+style+.ambox,.mw-parser-output .ambox+.mw-empty-elt+link+link+.ambox{margin-top:-1px}html body.mediawiki .mw-parser-output .ambox.mbox-small-left{margin:4px 1em 4px 0;overflow:hidden;width:238px;border-collapse:collapse;font-size:88%;line-height:1.25em}.mw-parser-output .ambox-speedy{border-left:10px solid var(--border-color-error,#b32424);background-color:var(--background-color-error-subtle,#ffe9e5)}.mw-parser-output .ambox-delete{border-left:10px solid var(--border-color-error,#b32424)}.mw-parser-output .ambox-content{border-left:10px solid #f28500}.mw-parser-output .ambox-style{border-left:10px solid var(--color-warning,#edab00)}.mw-parser-output .ambox-good{border-left:10px solid #66cc44}.mw-parser-output .ambox-discussion{border-left:10px solid #339966}.mw-parser-output .ambox-merge{border-left:10px solid #9932cc}.mw-parser-output .ambox-move{border-left:10px solid #9932cc}.mw-parser-output .ambox-protection{border-left:10px solid #a2a9b1}.mw-parser-output .ambox .mbox-text{border:none;padding:0.25em 0.5em;width:100%}.mw-parser-output .ambox .mbox-image{border:none;padding:2px 0 2px 0.5em;text-align:center}.mw-parser-output .ambox .mbox-imageright{border:none;padding:2px 0.5em 2px 0;text-align:center}.mw-parser-output .ambox .mbox-empty-cell{border:none;padding:0;width:1px}.mw-parser-output .ambox .mbox-image-div{width:52px}.mw-parser-output .ambox .mbox-textsmall-div{font-size:90%}html.client-js body.skin-minerva .mw-parser-output .mbox-text-span{margin-left:23px!important}@media(max-width:1366px){.mw-parser-output .ambox{margin-left:6%;margin-right:6%}}@media(max-width:719px){.mw-parser-output .ambox{margin-left:0;margin-right:0}}</style><div class="mbox-image"><div class="mbox-image-div"><span typeof="mw:File"><span><img alt="" resource="./Файл:Broom_icon.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Broom_icon.svg/40px-Broom_icon.svg.png" decoding="async" data-file-width="400" data-file-height="400" data-file-type="drawing" height="40" width="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Broom_icon.svg/120px-Broom_icon.svg.png 2x" class="mw-file-element"/></span></span></div></div><div class="mbox-text"><div class="mbox-text-div">Стиль этой статьи <b>неэнциклопедичен или нарушает нормы литературного русского языка</b>.</div><div class="mbox-textsmall-div hide-when-compact"><span class="hide-when-compact"> Статью следует исправить согласно <a rel="mw:WikiLink" href="./Википедия:Язык_и_стиль" title="Википедия:Язык и стиль">стилистическим правилам Википедии</a>.</span>  <span class="mbox-date"><i>(<span class="date">15 октября 2024</span>)</i></span></div></div><link rel="mw:PageProp/Category" href="./Категория:Википедия:Стилистически_некорректные_статьи_с_октября_2024_года"/><link rel="mw:PageProp/Category" href="./Категория:Википедия:Стилистически_некорректные_статьи"/><link rel="mw:PageProp/Category" href="./Категория:Википедия:Статьи_с_шаблонами_недостатков_по_алфавиту"/></div>
+<div role="navigation" class="navbox" aria-labelledby="Машинное_обучение_и_data_mining" data-name="Машинное обучение" about="#mwt92" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":"Машинное обучение","href":"./Шаблон:Машинное_обучение"},"params":{},"i":0}}]}' id="mwAaI"><table class="nowraplinks collapsible collapsed navbox-inner" style="border-spacing:0;background:transparent;color:inherit"><tbody><tr><th scope="colgroup" class="navbox-title" colspan="2"><span class="navbox-gear" style="float:left;text-align:left;width:5em;margin-right:0.5em"><span class="noprint skin-invert-image" typeof="mw:File" data-mw='{"caption":"Перейти к шаблону «Машинное обучение»"}'><a href="./Шаблон:Машинное_обучение" title="Перейти к шаблону «Машинное обучение»"><img alt="Перейти к шаблону «Машинное обучение»" resource="./Файл:Wikipedia_interwiki_section_gear_icon.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Wikipedia_interwiki_section_gear_icon.svg/20px-Wikipedia_interwiki_section_gear_icon.svg.png" decoding="async" data-file-width="14" data-file-height="14" data-file-type="drawing" height="14" width="14" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Wikipedia_interwiki_section_gear_icon.svg/40px-Wikipedia_interwiki_section_gear_icon.svg.png 2x" class="mw-file-element"/></a></span></span><div id="Машинное_обучение_и_data_mining" style="font-size:114%;margin:0 5em"><a rel="mw:WikiLink" href="./Машинное_обучение" title="Машинное обучение">Машинное обучение</a> и <a rel="mw:WikiLink" href="./Data_mining" title="Data mining">data mining</a></div></th></tr><tr><th scope="row" class="navbox-group" style="width:1px">Задачи</th><td class="navbox-list navbox-odd hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Задача_классификации" title="Задача классификации">Задача классификации</a></li>
+<li><a rel="mw:WikiLink" href="./Обучение_без_учителя" title="Обучение без учителя">Обучение без учителя</a></li>
+<li><a rel="mw:WikiLink" href="./Обучение_с_частичным_привлечением_учителя" title="Обучение с частичным привлечением учителя">Обучение с частичным привлечением учителя</a></li>
+<li><a rel="mw:WikiLink" href="./Регрессионный_анализ" title="Регрессионный анализ">Регрессионный анализ</a></li>
+<li><a rel="mw:WikiLink" href="./Автоматическое_машинное_обучение" title="Автоматическое машинное обучение">AutoML</a></li>
+<li><a rel="mw:WikiLink" href="./Обучение_ассоциативным_правилам" title="Обучение ассоциативным правилам">Ассоциативные правила</a></li>
+<li><a rel="mw:WikiLink" href="./Выделение_признаков" title="Выделение признаков">Выделение признаков</a></li>
+<li><a rel="mw:WikiLink" href="./Обучение_признакам" title="Обучение признакам">Обучение признакам</a></li>
+<li><a rel="mw:WikiLink" href="./Обучение_ранжированию" title="Обучение ранжированию">Обучение ранжированию</a></li>
+<li><a rel="mw:WikiLink" href="./Грамматический_вывод" title="Грамматический вывод">Грамматический вывод</a></li>
+<li><a rel="mw:WikiLink" href="./Онлайновое_машинное_обучение" title="Онлайновое машинное обучение">Онлайновое обучение</a></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px"><a rel="mw:WikiLink" href="./Обучение_с_учителем" title="Обучение с учителем">Обучение с учителем</a></th><td class="navbox-list navbox-even hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Метод_k_ближайших_соседей" title="Метод k ближайших соседей">Метод k ближайших соседей</a></li>
+<li><a rel="mw:WikiLink" href="./Наивный_байесовский_классификатор" title="Наивный байесовский классификатор">Наивный байесовский классификатор</a></li>
+<li><a rel="mw:WikiLink" href="./Дерево_решений" title="Дерево решений">Дерево решений</a></li>
+<li><a rel="mw:WikiLink" href="./Метод_опорных_векторов" title="Метод опорных векторов">Метод опорных векторов</a></li>
+<li><a rel="mw:WikiLink" href="./Линейная_регрессия" title="Линейная регрессия">Линейная регрессия</a></li>
+<li><a rel="mw:WikiLink" href="./Логистическая_регрессия" title="Логистическая регрессия">Логистическая регрессия</a></li>
+<li><a rel="mw:WikiLink" href="./Перцептрон" title="Перцептрон">Перцептрон</a></li>
+<li><a rel="mw:WikiLink" href="./Ансамблевое_обучение" title="Ансамблевое обучение">Ансамблевое обучение</a>
+<ul><li><a rel="mw:WikiLink" href="./Бэггинг" title="Бэггинг">Бэггинг</a></li>
+<li><a rel="mw:WikiLink" href="./Бустинг" title="Бустинг">Бустинг</a></li>
+<li><a rel="mw:WikiLink" href="./Метод_случайного_леса" title="Метод случайного леса">Метод случайного леса</a></li></ul></li>
+<li><a rel="mw:WikiLink" href="./Метод_релевантных_векторов" title="Метод релевантных векторов">Метод релевантных векторов</a></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px"><a rel="mw:WikiLink" href="./Кластерный_анализ" title="Кластерный анализ">Кластерный анализ</a></th><td class="navbox-list navbox-odd hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Метод_k-средних" title="Метод k-средних">Метод k-средних</a></li>
+<li><a rel="mw:WikiLink" href="./Метод_нечёткой_кластеризации_C-средних" title="Метод нечёткой кластеризации C-средних">Метод нечёткой кластеризации</a></li>
+<li><a rel="mw:WikiLink" href="./Иерархическая_кластеризация" title="Иерархическая кластеризация">Иерархическая кластеризация</a></li>
+<li><a rel="mw:WikiLink" href="./EM-алгоритм" title="EM-алгоритм">EM-алгоритм</a></li>
+<li><a rel="mw:WikiLink" href="./BIRCH" title="BIRCH">BIRCH</a></li>
+<li><a rel="mw:WikiLink" href="./Алгоритм_CURE" title="Алгоритм CURE">CURE</a></li>
+<li><a rel="mw:WikiLink" href="./DBSCAN" title="DBSCAN">DBSCAN</a></li>
+<li><a rel="mw:WikiLink" href="./Алгоритм_кластеризации_OPTICS" title="Алгоритм кластеризации OPTICS">OPTICS</a></li>
+<li><a rel="mw:WikiLink" href="./Сдвиг_среднего_значения" title="Сдвиг среднего значения">Mean-shift</a></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px"><a rel="mw:WikiLink" href="./Снижение_размерности" title="Снижение размерности">Снижение размерности</a></th><td class="navbox-list navbox-even hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Факторный_анализ" title="Факторный анализ">Факторный анализ</a></li>
+<li><a rel="mw:WikiLink" href="./Метод_главных_компонент" title="Метод главных компонент">Метод главных компонент</a></li>
+<li><a rel="mw:WikiLink" href="./Канонический_корреляционный_анализ" title="Канонический корреляционный анализ">CCA</a></li>
+<li><a rel="mw:WikiLink" href="./Анализ_независимых_компонент" title="Анализ независимых компонент">ICA</a></li>
+<li><a rel="mw:WikiLink" href="./Линейный_дискриминантный_анализ" title="Линейный дискриминантный анализ">LDA</a></li>
+<li><a rel="mw:WikiLink" href="./Неотрицательное_матричное_разложение" title="Неотрицательное матричное разложение">Неотрицательное матричное разложение</a></li>
+<li><a rel="mw:WikiLink" href="./Стохастическое_вложение_соседей_с_t-распределением" title="Стохастическое вложение соседей с t-распределением">t-SNE</a></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px"><a rel="mw:WikiLink" href="./Структурное_прогнозирование" title="Структурное прогнозирование">Структурное прогнозирование</a></th><td class="navbox-list navbox-odd hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Графовая_вероятностная_модель" title="Графовая вероятностная модель">Графовая вероятностная модель</a>
+<ul><li><a rel="mw:WikiLink" href="./Байесовская_сеть" title="Байесовская сеть">Байесовская сеть</a></li>
+<li><a rel="mw:WikiLink" href="./Скрытая_марковская_модель" title="Скрытая марковская модель">Скрытая марковская модель</a></li>
+<li><a rel="mw:WikiLink" href="./Conditional_random_field?action=edit&amp;redlink=1" title="Conditional random field" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Conditional random field"]}}'>CRF</a></li></ul></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px"><a rel="mw:WikiLink" href="./Выявление_аномалий" title="Выявление аномалий">Выявление аномалий</a></th><td class="navbox-list navbox-even hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Метод_k_ближайших_соседей" title="Метод k ближайших соседей">Метод k ближайших соседей</a></li>
+<li><a rel="mw:WikiLink" href="./Локальный_уровень_выброса" title="Локальный уровень выброса">Локальный уровень выброса</a></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px"><a rel="mw:WikiLink" href="./Графовая_вероятностная_модель" title="Графовая вероятностная модель">Графовые вероятностные модели</a></th><td class="navbox-list navbox-odd hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Байесовская_сеть" title="Байесовская сеть">Байесовская сеть</a></li>
+<li><a rel="mw:WikiLink" href="./Марковская_сеть" title="Марковская сеть">Марковская сеть</a></li>
+<li><a rel="mw:WikiLink" href="./Скрытая_марковская_модель" title="Скрытая марковская модель">Скрытая марковская модель</a></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px"><a rel="mw:WikiLink" href="./Нейронная_сеть" title="Нейронная сеть">Нейронные сети</a></th><td class="navbox-list navbox-even hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Ограниченная_машина_Больцмана" title="Ограниченная машина Больцмана">Ограниченная машина Больцмана</a></li>
+<li><a rel="mw:WikiLink" href="./Самоорганизующаяся_карта_Кохонена" title="Самоорганизующаяся карта Кохонена">Самоорганизующаяся карта</a></li>
+<li><a rel="mw:WikiLink" href="./Функция_активации" title="Функция активации">Функция активации</a>
+<ul><li><a rel="mw:WikiLink" href="./Сигмоида" title="Сигмоида">Сигмоида</a></li>
+<li><a rel="mw:WikiLink" href="./Многопеременная_логистическая_функция" title="Многопеременная логистическая функция">Softmax</a></li>
+<li><a rel="mw:WikiLink" href="./Радиально-базисная_функция" title="Радиально-базисная функция">Радиально-базисная функция</a></li></ul></li>
+<li><a rel="mw:WikiLink" href="./Метод_обратного_распространения_ошибки" class="mw-selflink selflink">Метод обратного распространения ошибки</a></li>
+<li><a rel="mw:WikiLink" href="./Глубокое_обучение" title="Глубокое обучение">Глубокое обучение</a></li>
+<li><a rel="mw:WikiLink" href="./Многослойный_перцептрон_Румельхарта" title="Многослойный перцептрон Румельхарта">Многослойный перцептрон</a></li>
+<li><a rel="mw:WikiLink" href="./Рекуррентная_нейронная_сеть" title="Рекуррентная нейронная сеть">Рекуррентная нейронная сеть</a>
+<ul><li><a rel="mw:WikiLink" href="./Долгая_краткосрочная_память" title="Долгая краткосрочная память">Долгая краткосрочная память</a></li>
+<li><a rel="mw:WikiLink" href="./Управляемый_рекуррентный_блок" title="Управляемый рекуррентный блок">Управляемый рекуррентный блок</a></li></ul></li>
+<li><a rel="mw:WikiLink" href="./Свёрточная_нейронная_сеть" title="Свёрточная нейронная сеть">Свёрточная нейронная сеть</a>
+<ul><li><a rel="mw:WikiLink" href="./U-Net" title="U-Net">U-Net</a></li></ul></li>
+<li><a rel="mw:WikiLink" href="./Автокодировщик" title="Автокодировщик">Автокодировщик</a></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px"><a rel="mw:WikiLink" href="./Обучение_с_подкреплением" title="Обучение с подкреплением">Обучение с подкреплением</a></th><td class="navbox-list navbox-odd hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Марковский_процесс" title="Марковский процесс">Марковский процесс</a></li>
+<li><a rel="mw:WikiLink" href="./Уравнение_Беллмана" title="Уравнение Беллмана">Уравнение Беллмана</a></li>
+<li><a rel="mw:WikiLink" href="./Жадный_алгоритм" title="Жадный алгоритм">Жадный алгоритм</a></li>
+<li><a rel="mw:WikiLink" href="./Q-обучение" title="Q-обучение">Q-обучение</a></li>
+<li><a rel="mw:WikiLink" href="./State–action–reward–state–action?action=edit&amp;redlink=1" title="State–action–reward–state–action" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["State–action–reward–state–action"]}}'>SARSA</a></li>
+<li><a rel="mw:WikiLink" href="./Temporal_difference_learning?action=edit&amp;redlink=1" title="Temporal difference learning" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Temporal difference learning"]}}'>Temporal difference (TD)</a></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px">Теория</th><td class="navbox-list navbox-even hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Размерность_Вапника_—_Червоненкиса" title="Размерность Вапника — Червоненкиса">Размерность Вапника — Червоненкиса</a></li>
+<li><a rel="mw:WikiLink" href="./Дилемма_смещения-дисперсии" title="Дилемма смещения-дисперсии">Дилемма смещения–дисперсии</a></li>
+<li><a rel="mw:WikiLink" href="./Теория_вычислительного_обучения" title="Теория вычислительного обучения">Теория вычислительного обучения</a></li>
+<li><a rel="mw:WikiLink" href="./Минимизация_эмпирического_риска" title="Минимизация эмпирического риска">Минимизация эмпирического риска</a></li>
+<li><a rel="mw:WikiLink" href="./Оккамово_обучение" title="Оккамово обучение">Оккамово обучение</a></li>
+<li><a rel="mw:WikiLink" href="./Вероятно_приближённо_корректное_обучение" title="Вероятно приближённо корректное обучение">PAC learning</a></li>
+<li><a rel="mw:WikiLink" href="./Статистическая_теория_обучения" title="Статистическая теория обучения">Статистическая теория обучения</a></li></ul>
+</div></td></tr><tr><th scope="row" class="navbox-group" style="width:1px">Журналы и конференции</th><td class="navbox-list navbox-odd hlist hlist-items-nowrap" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em">
+<ul><li><a rel="mw:WikiLink" href="./Conference_on_Neural_Information_Processing_Systems?action=edit&amp;redlink=1" title="Conference on Neural Information Processing Systems" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Conference on Neural Information Processing Systems"]}}'>NeurIPS</a></li>
+<li><a rel="mw:WikiLink" href="./International_Conference_on_Machine_Learning?action=edit&amp;redlink=1" title="International Conference on Machine Learning" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["International Conference on Machine Learning"]}}'>ICML</a></li>
+<li><a rel="mw:WikiLink" href="./Machine_Learning_(journal)?action=edit&amp;redlink=1" title="Machine Learning (journal)" class="new" typeof="mw:LocalizedAttrs" data-mw-i18n='{"title":{"lang":"x-page","key":"red-link-title","params":["Machine Learning (journal)"]}}'>ML</a></li>
+<li><a rel="mw:WikiLink" href="./Journal_of_Machine_Learning_Research" title="Journal of Machine Learning Research">JMLR</a></li>
+<li><a rel="mw:ExtLink nofollow" href="https://arxiv.org/list/cs.LG/recent" class="external text">ArXiv:cs.LG</a></li></ul>
+</div></td></tr></tbody></table></div>
+
+<link rel="mw:PageProp/Category" href="./Категория:Методы_обучения_нейросетей" id="mwAaM"/></section>
