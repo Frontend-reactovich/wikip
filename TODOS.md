@@ -2,10 +2,11 @@
 
 ## 1. Bootstrap repo (tooling + CI)
 - **What:** Vite + React + TS, ESLint, Vitest, Playwright, GitHub Actions (lint, test, build, deploy).
+- **Status:** Частично сделано — приложение в каталоге `web/` (Vite react-ts), CI: `.github/workflows/ci.yml` (lint + build). Осталось: Vitest, Playwright, deploy (Pages/Vercel).
 - **Why:** Без этого каждый следующий шаг дороже; NFR и дизайн-док предполагают измеримый MVP.
 - **Pros:** Быстрый feedback, `/qa` может опереться на стабильный pipeline.
 - **Cons:** ~2–4 часа на настройку.
-- **Context:** Репозиторий сейчас пустой; первый PR только инфраструктура.
+- **Context:** Доки в корне репо; исходники UI — в `web/`.
 - **Depends on:** —  
 - **Blocked by:** —
 

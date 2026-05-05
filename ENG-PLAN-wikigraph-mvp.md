@@ -93,17 +93,16 @@ push history state ─► navigate /wiki/bar ─► repeat
 
 ## 2. Code quality (план структуры репозитория)
 
+Корень репозитория: продуктовые `.md`; приложение — в **`web/`** (Vite).
+
 ```
-src/
-  app/ or pages/          # маршрутизация
-  components/             # ArticlePane, GraphPane, Layout
-  lib/
-    data/                 # типы, загрузка JSON, выбор соседей
-    graph/                # layout helpers, cap 7 nodes
-    routing/              # history stack sync с URL
-data/                     # артефакты снапшота (коммитим)
+web/
+  src/
+    ...                   # маршрутизация, ArticlePane, GraphPane, Layout
+  public/
+data/                     # в корне репо: артефакты снапшота (коммитим)
 scripts/
-  ingest-wikipedia.mjs    # одноразовая/редкая пересборка снапшота
+  ingest-wikipedia.mjs    # в корне репо: одноразовая/редкая пересборка снапшота
 ```
 
 **DRY:** один модуль `selectNeighbors(slug, edges, cap)` — используется и в графе, и в тестах.
